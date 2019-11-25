@@ -8,6 +8,8 @@ import uni.fmi.models.GenreModel;
 @Repository
 public interface GenreRepository extends JpaRepository<GenreModel, Integer> {
 
+	public GenreModel findById(int id);
+	
 	public GenreModel findByName(String name);
 	
 }

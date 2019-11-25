@@ -1,7 +1,6 @@
 package uni.fmi.rest;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,14 +34,13 @@ public class GenresController {
 	public ResponseEntity<GenreModel> getGenreById(
 			@RequestParam(name = "id") int id) {
 		
-		Optional<GenreModel> genreFromDB = genreRepo.findById(id);
+		GenreModel genre = genreRepo.findById(id);
 		
 		// if the genre does not exist
-		if(!genreFromDB.isPresent()) {
-			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		if(genre == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		
-		GenreModel genre = genreFromDB.get();
 		return new ResponseEntity<>(genre, HttpStatus.OK);
 	}
 	
@@ -51,11 +49,9 @@ public class GenresController {
 	public ResponseEntity<GenreModel> insertGenre(
 			@RequestParam(name = "name") String genreName) {
 		
-		GenreModel genreFromDB = genreRepo.findByName(genreName);
-		
 		// if the genre already exist
-		if(genreFromDB != null) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		if(genreRepo.findByName(genreName) != null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
 		GenreModel genre = new GenreModel();
@@ -69,7 +65,7 @@ public class GenresController {
 		}
 		
 		// is the genre is not inserted
-		return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 	
 	
@@ -78,14 +74,17 @@ public class GenresController {
 			@RequestParam(name = "id") int id,
 			@RequestParam(name = "name")String genreName) {
 		
-		Optional<GenreModel> genreFromDB = genreRepo.findById(id);
-		
 		// if the genre does not exist
-		if(!genreFromDB.isPresent()) {
-			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		if(genreRepo.findById(id) == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		
-		GenreModel genre = genreFromDB.get();
+		// if genre with this name already exist
+		if(genreRepo.findByName(genreName) != null) {
+			return new ResponseEntity<>(HttpStatus.CONFLICT);
+		}
+		
+		GenreModel genre = genreRepo.findById(id);
 		genre.setName(genreName);
 		
 		genre = genreRepo.saveAndFlush(genre);
@@ -94,7 +93,7 @@ public class GenresController {
 			return new ResponseEntity<>(genre, HttpStatus.OK);
 		}
 		
-		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
 	
 	
@@ -102,14 +101,12 @@ public class GenresController {
 	public ResponseEntity<Boolean> deleteGenre(
 			@RequestParam(name = "id") int id) {
 		
-		Optional<GenreModel> genreFromDB = genreRepo.findById(id);
-		
 		// if the genre does not exist
-		if(!genreFromDB.isPresent()) {
+		if(genreRepo.findById(id) == null) {
 			return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
 		}
 		
-		GenreModel genre = genreFromDB.get();
+		GenreModel genre = genreRepo.findById(id);
 		
 		genreRepo.delete(genre);
 		
