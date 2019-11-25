@@ -29,6 +29,9 @@ public class GameModel {
 	@Column(name = "description", length = 500)
 	private String description;
 	
+	@Column(name = "image", length = 250)
+	private String image;
+	
 	@ManyToMany(cascade = {CascadeType.ALL})
 	@JoinTable(
 			name = "game_genre",
@@ -76,6 +79,14 @@ public class GameModel {
 		this.description = description;
 	}
 
+	public String getImage() {
+		return image;
+	}
+
+
+	public void setImage(String image) {
+		this.image = image;
+	}
 
 	public List<GenreModel> getGenres() {
 		return genres;
