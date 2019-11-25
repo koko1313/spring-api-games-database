@@ -25,13 +25,13 @@ public class GenresController {
 	
 	
 	@GetMapping(path = "/genre/all")
-	public ResponseEntity<List<GenreModel>> getAllGenres() {
+	public ResponseEntity<List<GenreModel>> getAll() {
 		return new ResponseEntity<>(genreRepo.findAll(), HttpStatus.OK);
 	}
 	
 	
 	@GetMapping(path = "/genre")
-	public ResponseEntity<GenreModel> getGenreById(
+	public ResponseEntity<GenreModel> getById(
 			@RequestParam(name = "id") int id) {
 		
 		GenreModel genre = genreRepo.findById(id);
@@ -46,7 +46,7 @@ public class GenresController {
 	
 	
 	@PostMapping(path = "/genre/insert")
-	public ResponseEntity<GenreModel> insertGenre(
+	public ResponseEntity<GenreModel> insert(
 			@RequestParam(name = "name") String genreName) {
 		
 		// if the genre already exist
@@ -70,7 +70,7 @@ public class GenresController {
 	
 	
 	@PutMapping(path = "/genre/update")
-	public ResponseEntity<GenreModel> updateGenre(
+	public ResponseEntity<GenreModel> update(
 			@RequestParam(name = "id") int id,
 			@RequestParam(name = "name")String genreName) {
 		
@@ -98,7 +98,7 @@ public class GenresController {
 	
 	
 	@DeleteMapping(path = "/genre/delete")
-	public ResponseEntity<Boolean> deleteGenre(
+	public ResponseEntity<Boolean> delete(
 			@RequestParam(name = "id") int id) {
 		
 		// if the genre does not exist

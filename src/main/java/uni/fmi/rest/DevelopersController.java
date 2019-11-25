@@ -25,13 +25,13 @@ public class DevelopersController {
 	
 	
 	@GetMapping(path = "/developer/all")
-	public ResponseEntity<List<DeveloperModel>> getAllDevelopers() {
+	public ResponseEntity<List<DeveloperModel>> getAll() {
 		return new ResponseEntity<>(developerRepo.findAll(), HttpStatus.OK);
 	}
 	
 	
 	@GetMapping(path = "/developer")
-	public ResponseEntity<DeveloperModel> getDeveloperById(
+	public ResponseEntity<DeveloperModel> getById(
 			@RequestParam(name = "id") int id) {
 		
 		DeveloperModel developer = developerRepo.findById(id);
@@ -46,7 +46,7 @@ public class DevelopersController {
 	
 	
 	@PostMapping(path = "/developer/insert")
-	public ResponseEntity<DeveloperModel> insertDeveloper(
+	public ResponseEntity<DeveloperModel> insert(
 			@RequestParam(name = "name") String developerName,
 			@RequestParam(name = "description") String description) {
 		
@@ -71,7 +71,7 @@ public class DevelopersController {
 	
 	
 	@PutMapping(path = "/developer/update")
-	public ResponseEntity<DeveloperModel> updateDeveloper(
+	public ResponseEntity<DeveloperModel> update(
 			@RequestParam(name = "id") int id,
 			@RequestParam(name = "name") String developerName,
 			@RequestParam(name = "description") String description) {
@@ -101,7 +101,7 @@ public class DevelopersController {
 	
 	
 	@DeleteMapping(path = "/developer/delete")
-	public ResponseEntity<Boolean> deleteDeveloper(
+	public ResponseEntity<Boolean> delete(
 			@RequestParam(name = "id") int id) {
 		
 		// if the developer does not exist

@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import uni.fmi.models.GameModel;
 
 @Repository
-public interface GamesRepository extends JpaRepository<GameModel, Integer> {
+public interface GameRepository extends JpaRepository<GameModel, Integer> {
 
 }
