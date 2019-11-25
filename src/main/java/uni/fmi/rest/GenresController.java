@@ -31,6 +31,22 @@ public class GenresController {
 	}
 	
 	
+	@GetMapping(path = "/genre")
+	public ResponseEntity<GenreModel> getGenreById(
+			@RequestParam(name = "id") int id) {
+		
+		Optional<GenreModel> genreFromDB = genreRepo.findById(id);
+		
+		// if the genre does not exist
+		if(!genreFromDB.isPresent()) {
+			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+		}
+		
+		GenreModel genre = genreFromDB.get();
+		return new ResponseEntity<>(genre, HttpStatus.OK);
+	}
+	
+	
 	@PostMapping(path = "/genre/insert")
 	public ResponseEntity<GenreModel> insertGenre(
 			@RequestParam(name = "name") String genreName) {
