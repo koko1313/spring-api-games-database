@@ -48,7 +48,7 @@ public class DevelopersController {
 	@PostMapping(path = "/developer/insert")
 	public ResponseEntity<DeveloperModel> insert(
 			@RequestParam(name = "name") String developerName,
-			@RequestParam(name = "description") String description) {
+			@RequestParam(name = "description", required = false) String description) {
 		
 		// if the developer already exist
 		if(developerRepo.findByName(developerName) != null) {
@@ -73,8 +73,8 @@ public class DevelopersController {
 	@PutMapping(path = "/developer/update")
 	public ResponseEntity<DeveloperModel> update(
 			@RequestParam(name = "id") int id,
-			@RequestParam(name = "name") String developerName,
-			@RequestParam(name = "description") String description) {
+			@RequestParam(name = "name", required = false) String developerName,
+			@RequestParam(name = "description", required = false) String description) {
 		
 		// if the developer does not exist
 		if(developerRepo.findById(id) == null) {
@@ -87,8 +87,8 @@ public class DevelopersController {
 		}
 		
 		DeveloperModel developer = developerRepo.findById(id);
-		developer.setName(developerName);
-		developer.setDescription(description);
+		if(developerName != null) developer.setName(developerName);
+		if(description != null) developer.setDescription(description);
 		
 		developer = developerRepo.saveAndFlush(developer);
 		

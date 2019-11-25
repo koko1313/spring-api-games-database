@@ -72,7 +72,7 @@ public class GenresController {
 	@PutMapping(path = "/genre/update")
 	public ResponseEntity<GenreModel> update(
 			@RequestParam(name = "id") int id,
-			@RequestParam(name = "name")String genreName) {
+			@RequestParam(name = "name") String genreName) {
 		
 		// if the genre does not exist
 		if(genreRepo.findById(id) == null) {
