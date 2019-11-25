@@ -89,11 +89,7 @@ public class GenresController {
 		
 		genre = genreRepo.saveAndFlush(genre);
 		
-		if(genre != null) {
-			return new ResponseEntity<>(genre, HttpStatus.OK);
-		}
-		
-		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(genre, HttpStatus.OK);
 	}
 	
 	

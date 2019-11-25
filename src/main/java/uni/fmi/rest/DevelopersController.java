@@ -92,11 +92,7 @@ public class DevelopersController {
 		
 		developer = developerRepo.saveAndFlush(developer);
 		
-		if(developer != null) {
-			return new ResponseEntity<>(developer, HttpStatus.OK);
-		}
-		
-		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(developer, HttpStatus.OK);
 	}
 	
 	

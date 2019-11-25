@@ -141,11 +141,7 @@ public class GamesController {
 		
 		game = gameRepo.saveAndFlush(game);
 		
-		if(game != null) {
-			return new ResponseEntity<>(game, HttpStatus.OK);
-		}
-		
-		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(game, HttpStatus.OK);
 	}
 	
 	
