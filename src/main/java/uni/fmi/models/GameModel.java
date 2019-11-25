@@ -32,7 +32,7 @@ public class GameModel {
 	@Column(name = "image", length = 250)
 	private String image;
 	
-	@ManyToMany(cascade = {CascadeType.ALL})
+	@ManyToMany(cascade = CascadeType.DETACH)
 	@JoinTable(
 			name = "game_genre",
 			joinColumns = { @JoinColumn(name = "game_id") },
