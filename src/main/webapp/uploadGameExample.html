@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+
+<form id="myForm">
+	<input id="name" type="text" value="sadgamew">
+	<input id="image" type="file" accept="image/*">
+	
+	<input type="submit" value="go">
+</form>
+
+<script>
+$('#myForm').submit(function(e){
+	e.preventDefault();
+	
+	var formData = new FormData();
+	
+	formData.append("name", $("#name").val())
+	formData.append("image", $("#image")[0].files[0]);
+	
+    $.ajax({
+        url:'/game/insert',
+        type:'POST',
+        processData: false,
+        contentType: false,
+        cache: false,
+        data: formData,
+        enctype: 'multipart/form-data',
+        success: function(data){
+            console.log(data);
+        },
+        fail: function(data) {
+        	console.log(data);
+        }
+    });
+});
+
+</script>
+
+</body>
+</html>

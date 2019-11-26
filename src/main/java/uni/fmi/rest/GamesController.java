@@ -1,7 +1,11 @@
 package uni.fmi.rest;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import uni.fmi.models.DeveloperModel;
 import uni.fmi.models.GameModel;
@@ -58,9 +63,10 @@ public class GamesController {
 	public ResponseEntity<GameModel> insert(
 			@RequestParam(name = "name") String name,
 			@RequestParam(name = "description", required = false) String description,
-			@RequestParam(name = "image", required = false) String image,
+			@RequestParam(name = "image", required = false) MultipartFile image,
 			@RequestParam(name = "developer_id", required = false, defaultValue = "0") int developer_id,
-			@RequestParam(name = "genres_id_list", required = false) List<Integer> genres_id_list) {
+			@RequestParam(name = "genres_id_list", required = false) List<Integer> genres_id_list,
+			HttpServletRequest request) {
 		
 		// if the game already exist
 		if(gameRepo.findByName(name) != null) {
@@ -81,10 +87,35 @@ public class GamesController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
+		// here we will save the image name if there is image parameter
+		String imageName = null;
+		
+		// if there is image parameter
+		if(image != null) {
+			try {
+				String uploadsDir = "/assets/images/games/";
+				imageName = "game-" + name + "." + image.getContentType().split("/")[1];
+				
+                String realPathtoUploads =  request.getServletContext().getRealPath(uploadsDir); // get the path to webapp folder and upload folder in it
+                
+                if(!new File(realPathtoUploads).exists()) {
+                    new File(realPathtoUploads).mkdirs();
+                }
+
+                // String orgName = image.getOriginalFilename();
+                String filePath = realPathtoUploads + imageName;
+                File dest = new File(filePath);
+                
+				image.transferTo(dest);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		GameModel game = new GameModel();
 		game.setName(name);
 		game.setDescription(description);
-		game.setImage(image);
+		game.setImage(imageName);
 		game.setDeveloper(developer);
 		game.setGenres(genres);
 		
