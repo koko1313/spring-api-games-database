@@ -103,6 +103,18 @@ public class GameModel {
 	public void setGenres(List<GenreModel> genres) {
 		this.genres = genres;
 	}
+	
+	
+
+	public List<PlatformModel> getPlatforms() {
+		return platforms;
+	}
+
+
+	public void setPlatforms(List<PlatformModel> platforms) {
+		this.platforms = platforms;
+	}
+
 
 	public DeveloperModel getDeveloper() {
 		return developer;

@@ -20,9 +20,11 @@ import uni.fmi.imageManipulations.FileManipulations;
 import uni.fmi.models.DeveloperModel;
 import uni.fmi.models.GameModel;
 import uni.fmi.models.GenreModel;
+import uni.fmi.models.PlatformModel;
 import uni.fmi.repositories.DeveloperRepository;
 import uni.fmi.repositories.GameRepository;
 import uni.fmi.repositories.GenreRepository;
+import uni.fmi.repositories.PlatformRepository;
 
 @RestController
 public class GamesController {
@@ -30,15 +32,17 @@ public class GamesController {
 	GameRepository gameRepo;
 	DeveloperRepository developerRepo;
 	GenreRepository genreRepo;
+	PlatformRepository platformRepo;
 	
 	HttpServletRequest request;
 	
 	final String PATH_TO_IMAGES_FOLDER = "/assets/images/games/";
 	
-	public GamesController(GameRepository gameRepo, DeveloperRepository developerRepo, GenreRepository genreRepo, HttpServletRequest request) {
+	public GamesController(GameRepository gameRepo, DeveloperRepository developerRepo, GenreRepository genreRepo, PlatformRepository platformRepo, HttpServletRequest request) {
 		this.gameRepo = gameRepo;
 		this.developerRepo = developerRepo;
 		this.genreRepo = genreRepo;
+		this.platformRepo = platformRepo;
 		this.request = request;
 	}
 	
@@ -70,7 +74,8 @@ public class GamesController {
 			@RequestParam(name = "description", required = false) String description,
 			@RequestParam(name = "image", required = false) MultipartFile image,
 			@RequestParam(name = "developer_id", required = false, defaultValue = "0") int developer_id,
-			@RequestParam(name = "genres_id_list", required = false) List<Integer> genres_id_list) {
+			@RequestParam(name = "genres_id_list", required = false) List<Integer> genres_id_list,
+			@RequestParam(name = "platforms_id_list", required = false)List<Integer> platforms_id_list) {
 		
 		// if the game already exist
 		if(gameRepo.findByName(name) != null) {
@@ -88,6 +93,13 @@ public class GamesController {
 		
 		// if there is genres_id_list parameter but some of the genres are not found
 		if(genres_id_list != null && genres.contains(null)) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		List<PlatformModel> platforms = getPlatformsById(platforms_id_list);
+		
+		// if there is platforms_id_list parameter but some of the platforms are not found
+		if(platforms_id_list != null && platforms.contains(null)) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
@@ -109,6 +121,7 @@ public class GamesController {
 		game.setImage(imageName);
 		game.setDeveloper(developer);
 		game.setGenres(genres);
+		game.setPlatforms(platforms);
 		
 		game = gameRepo.saveAndFlush(game);
 		
@@ -128,7 +141,8 @@ public class GamesController {
 			@RequestParam(name = "description", required = false) String description,
 			@RequestParam(name = "image", required = false) MultipartFile image,
 			@RequestParam(name = "developer_id", required = false, defaultValue = "0") int developer_id,
-			@RequestParam(name = "genres_id_list", required = false) List<Integer> genres_id_list) {
+			@RequestParam(name = "genres_id_list", required = false) List<Integer> genres_id_list,
+			@RequestParam(name = "platforms_id_list", required = false)List<Integer> platforms_id_list) {
 		
 		// if the game does not exist
 		if(gameRepo.findById(id) == null) {
@@ -154,6 +168,13 @@ public class GamesController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
+		List<PlatformModel> platforms = getPlatformsById(platforms_id_list);
+		
+		// if there is platforms_id_list parameter but some of the platforms are not found
+		if(platforms_id_list != null && platforms.contains(null)) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
 		// here we will save the image name if there is image parameter
 		String imageName = null;
 		
@@ -176,6 +197,7 @@ public class GamesController {
 		if(image != null) game.setImage(imageName);
 		if(developer_id != 0) game.setDeveloper(developer);
 		if(genres_id_list != null) game.setGenres(genres);
+		if(platforms_id_list != null) game.setPlatforms(platforms);
 		
 		game = gameRepo.saveAndFlush(game);
 		
@@ -215,7 +237,6 @@ public class GamesController {
 	
 	
 	private List<GenreModel> getGenresById(List<Integer> idList) {
-		
 		if(idList == null) return null;
 		
 		List<GenreModel> genres = new ArrayList<>();
@@ -227,6 +248,21 @@ public class GamesController {
 		}
 		
 		return genres;
+	}
+	
+	
+	private List<PlatformModel> getPlatformsById(List<Integer> idList) {
+		if(idList == null) return null;
+		
+		List<PlatformModel> platforms = new ArrayList<>();
+		
+		for(int platform_id : idList) {
+			PlatformModel platform = platformRepo.findById(platform_id);
+			
+			platforms.add(platform);
+		}
+		
+		return platforms;
 	}
 	
 	
