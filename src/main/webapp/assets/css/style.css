@@ -1,0 +1,70 @@
+/* main settings */
+body {
+    background-color: #151515;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+}
+h1 {
+    color: #63C83D;
+}
+.modal {
+    color: black;
+}
+.list-group li:hover {
+    cursor: pointer;
+}
+#goTopButton {
+    position: fixed;
+    right: 50px;
+    bottom: 50px;
+    font-size: 2em;
+    border: 2px solid black;
+    cursor: pointer;
+}
+hr {
+    border-top: 1px solid #234715;
+}
+/* end of main settings */
+
+/* customize some bootstrap classes */
+.active {
+    background-color: #63C83D!important;
+    border: none;
+}
+.btn-primary {
+    background-color: #63C83D!important;
+    border: none;
+}
+/* end of bootstrap classes customization */
+
+/* result game */
+.result-game {
+    border: 2px solid #234715;
+    background-color: #202020;
+    padding: 20px;
+    margin: 10px 0;
+}
+.result-game h3 {
+    color: #63C83D;
+}
+.result-game img {
+    border: 2px solid #234715;
+    padding: 2px;
+    border-radius: 15px 0 15px 0;
+}
+.result-game p {
+    color: #63C83D;
+    font-weight: bold;
+}
+.result-game p span {
+    color: white;
+    font-weight: normal;
+}
+
+/* result template 2 */
+.card {
+    float: left!important;
+    min-width: 350px;
+    margin: 30px 0;
+}
+/* end of result game */
