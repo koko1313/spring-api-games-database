@@ -3096,3 +3096,18 @@ Caused by: java.lang.IllegalStateException: The file is locked: nio:D:/Work Fold
 	at org.h2.mvstore.FileStore.open(FileStore.java:172)
 	at org.h2.mvstore.MVStore.<init>(MVStore.java:381)
 	... 65 more
+2019-11-27 17:54:23 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DELETE FROM PLATFORMS WHERE *[*]"; expected "NOT, EXISTS, INTERSECTS, UNIQUE"; SQL statement:
+delete from PLATFORMS where * [42001-200]
+2019-11-27 18:00:14 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'' (PLATFORMS: ""ID"" INTEGER NOT NULL)"; SQL statement:
+INSERT INTO "PUBLIC"."PLATFORMS"("ID","NAME")VALUES(?,?) [22018-200]
+2019-11-27 18:00:14 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'' (PLATFORMS: ""ID"" INTEGER NOT NULL)"; SQL statement:
+INSERT INTO "PUBLIC"."PLATFORMS"("ID","NAME")VALUES(?,?) [22018-200]
+2019-11-27 18:02:41 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'' (PLATFORMS: ""ID"" INTEGER DEFAULT NEXT VALUE FOR ""PUBLIC"".""SYSTEM_SEQUENCE_5652A8B4_6AAF_499D_928C_2D42E017955C"" NOT NULL NULL_TO_DEFAULT SEQUENCE ""PUBLIC"".""SYSTEM_SEQUENCE_5652A8B4_6AAF_499D_928C_2D42E017955C"")"; SQL statement:
+INSERT INTO "PUBLIC"."PLATFORMS"("ID","NAME")VALUES(?,?) [22018-200]
+2019-11-27 18:02:41 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'' (PLATFORMS: ""ID"" INTEGER DEFAULT NEXT VALUE FOR ""PUBLIC"".""SYSTEM_SEQUENCE_5652A8B4_6AAF_499D_928C_2D42E017955C"" NOT NULL NULL_TO_DEFAULT SEQUENCE ""PUBLIC"".""SYSTEM_SEQUENCE_5652A8B4_6AAF_499D_928C_2D42E017955C"")"; SQL statement:
+INSERT INTO "PUBLIC"."PLATFORMS"("ID","NAME")VALUES(?,?) [22018-200]
