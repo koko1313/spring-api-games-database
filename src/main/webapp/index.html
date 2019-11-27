@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Games list</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/css/fontawesome.all.min.css">
+	<link rel="stylesheet" href="assets/css/style.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap">
+</head>
+<body>
+	<div class="container">
+
+		<div class="row">
+			<div class="col">
+				<h1>Библиотека с игри</h1>
+			</div>
+		</div>
+
+		<!-- Filters -->
+		<div class="row">
+			<div class="col-md">
+				<!--
+				<a href="#" id="openGenresModalButton" class="btn btn-primary" data-toggle="modal" data-target="#genresModal">Жанр: Всички</a>
+				<a href="#" id="openPlatformsModalButton" class="btn btn-primary" data-toggle="modal" data-target="#platformsModal">Платформа: Всички</a>
+				-->
+				
+				<!-- Different views -->
+				<div class="float-right d-none d-md-block" style="margin-left: 20px;">
+					<!-- Rows -->
+					<a href="#" class="btn btn-primary" onClick="setResultDesign(1)"><i class="fas fa-grip-lines"></i></a>
+					<!-- Grid -->
+					<a href="#" class="btn btn-primary" onClick="setResultDesign(2)"><i class="fas fa-th"></i></a>
+				</div>
+
+				<!-- Ordering -->
+				<!--
+				<div class="float-right">
+					<a href="#" id="trigerOrderByReleasedButton" class="btn btn-primary" onClick="trigerOrderByReleased()"><i class="fas fa-sort-numeric-down-alt"></i></a>
+				</div>
+				-->
+			</div>
+		</div>
+
+		<!-- Results -->
+		<div class="row">
+			<div class="col" id="results">
+
+				<!-- Result template -->
+				<div id="result-template-1" class="container result-game" style="display: none;">
+
+					<div class="row">
+						<div class="col">
+							<h3>Game title</h3>
+						</div>
+					</div>
+
+					<hr class="hr">
+
+					<div class="row">
+						<div class="col-md-5">
+							<img src="" class="img-fluid">
+						</div>
+
+						<div class="col-md">
+							<p>Платформи <span class="platforms">PC, Android, ...</span></p>
+							<p>Разработчици: <span class="developers">Rockstar, ...</span></p>
+							<p>Жанр: <span class="genres">Action, Horror, ...</span></p>
+						</div>
+					</div>
+
+				</div>
+
+				<!-- Result template 2 -->
+				<div id="result-template-2" class="card-deck" style="display: none;">
+					<div id="result-template-2-card" class="card result-game" style="display: none;">
+						<img src="" class="card-img-top">
+						<hr>
+						<div class="card-body">
+							<h3 class="card-title">Game title</h3>
+							<p class="card-text">
+								<p>Платформи <span class="platforms">PC, Android, ...</span></p>
+								<p>Разработчици: <span class="developers">Rockstar, ...</span></p>
+								<p>Жанр: <span class="genres">Action, Horror, ...</span></p>
+							</p>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+		
+		<!-- Loading bar -->
+		<!--
+		<div class="row my-3">
+			<div class="col">
+				<div id="loadingBar" class="text-center" style="display: none!important;">
+					<div class="spinner-border" role="status" style="position: relative; top: 45%">
+						<span class="sr-only">Loading...</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		-->
+
+		<!-- Go top button -->
+		<div id="goTopButton" class="btn btn-primary" style="display: none;" onClick="goToTopOfPage()"><i class="fas fa-arrow-up"></i></div>
+
+	</div>
+
+	<!-- Genres modal -->
+	<div class="modal fade" id="genresModal" tabindex="-1" role="dialog" aria-labelledby="genresModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="genresleModalLabel">Жанрове</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				</div>
+				<div class="modal-body">
+					<ul class="list-group">
+						<li class="list-group-item list-group-item-action active" onClick="selectGenre(this)" data-value="0">Всички</li>
+						<!-- Шаблон за линк към жанр -->
+						<li id="genreItemTemplate" class="list-group-item list-group-item-action" onClick="selectGenre(this)" data-value="1" style="display: none;">Horror</li>
+					</ul>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Platforms modal -->
+	<div class="modal fade" id="platformsModal" tabindex="-1" role="dialog" aria-labelledby="platformsModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="platformsleModalLabel">Платформи</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					</div>
+					<div class="modal-body">
+						<ul class="list-group">
+							<li class="list-group-item list-group-item-action active" onClick="selectPlatform(this)" data-value="0">Всички</li>
+							<!-- Шаблон за линк към платформа -->
+							<li id="platformItemTemplate" class="list-group-item list-group-item-action" onClick="selectPlatform(this)" data-value="1" style="display: none;">PC</li>
+						</ul>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+	</div>
+
+	<!-- Loading scrips -->
+	<script src="assets/js/jquery-3.4.1.min.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
+
+	<script src="assets/js/requests.js"></script>
+	<script src="assets/js/script.js"></script>
+</body>
+</html>
