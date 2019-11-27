@@ -39,6 +39,13 @@ public class GameModel {
 			inverseJoinColumns = { @JoinColumn(name = "genre_id") } )
 	private List<GenreModel> genres;
 	
+	@ManyToMany(cascade = CascadeType.DETACH)
+	@JoinTable(
+			name = "game_platform",
+			joinColumns = { @JoinColumn(name = "game_id") },
+			inverseJoinColumns = { @JoinColumn(name = "platform_id") } )
+	private List<PlatformModel> platforms;
+	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "developer_id")
 	private DeveloperModel developer;
