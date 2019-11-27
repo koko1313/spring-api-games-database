@@ -4,6 +4,9 @@
 var PATH_TO_IMAGES = "assets/images/games/";
 var resultDesign = 1;
 
+var genre = null; // ще ни служи за зареждане по жанр
+var platform = null; // ще ни служи за зареждане по платформа
+
 // сетва избрания дизайн за показване на резултатите и ги визуализира по него
 function setResultDesign(designNumber) {
     resultDesign = designNumber;
@@ -140,6 +143,33 @@ function search(param) {
     }
 
     ajax("GET", "/game/all", showResult);
+}
+
+// селектиране на жанр - извикава се когато се кликне бутона на някой жанр
+function selectGenre(htmlItem) {
+
+    // премахваме класът за активен бутон от всички бутони
+    var genres = $(htmlItem).parent().children();
+    for(var i=0; i<genres.length; i++) {
+        genres.removeClass("active");
+    }
+
+    $(htmlItem).addClass("active");
+    var genreId = htmlItem.dataset.value;
+
+    var genreName = $(htmlItem).text();
+    $("#openGenresModalButton").text("Жанр: "+ genreName);
+    $("#genresModal").modal('hide');
+
+    // да се покажат всички
+    if(genreId == 0) {
+        genre = null;
+        clearResults();
+        search();
+        return;
+    }
+
+    search({genre: genreId});
 }
 
 // попълва филтъра с жанровете
