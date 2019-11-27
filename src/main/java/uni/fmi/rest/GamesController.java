@@ -1,7 +1,5 @@
 package uni.fmi.rest;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import uni.fmi.imageManipulations.FileManipulations;
 import uni.fmi.models.DeveloperModel;
 import uni.fmi.models.GameModel;
 import uni.fmi.models.GenreModel;
@@ -33,6 +32,8 @@ public class GamesController {
 	GenreRepository genreRepo;
 	
 	HttpServletRequest request;
+	
+	final String PATH_TO_IMAGES_FOLDER = "/assets/images/games/";
 	
 	public GamesController(GameRepository gameRepo, DeveloperRepository developerRepo, GenreRepository genreRepo, HttpServletRequest request) {
 		this.gameRepo = gameRepo;
@@ -95,8 +96,11 @@ public class GamesController {
 		
 		// if there is image parameter
 		if(image != null) {
-			String customName = "game-" + generateRandomString();
-			imageName = saveImageToDisk(customName, image);
+			String customName = generateRandomString();
+			
+			String realPathToImagesFolder = request.getServletContext().getRealPath(PATH_TO_IMAGES_FOLDER);
+			
+			imageName = FileManipulations.saveFileToDisk(customName, image, realPathToImagesFolder);
 		}
 		
 		GameModel game = new GameModel();
@@ -155,13 +159,15 @@ public class GamesController {
 		
 		// if there is image parameter
 		if(image != null) {
+			String realPathToImagesFolder = request.getServletContext().getRealPath(PATH_TO_IMAGES_FOLDER);
+			
 			// delete the old image
 			String oldImageName = gameRepo.findById(id).getImage();
-			deleteImageFromDisk(oldImageName);
+			FileManipulations.deleteFileFromDisk(oldImageName, realPathToImagesFolder);
 			
 			// save the new image
 			String customName = generateRandomString();
-			imageName = saveImageToDisk(customName, image);
+			imageName = FileManipulations.saveFileToDisk(customName, image, realPathToImagesFolder);
 		}
 		
 		GameModel game = gameRepo.findById(id);
@@ -189,7 +195,8 @@ public class GamesController {
 		GameModel game = gameRepo.findById(id);
 		
 		// delete the game image from the disk
-		deleteImageFromDisk(game.getImage());
+		String realPathToImagesFolder = request.getServletContext().getRealPath(PATH_TO_IMAGES_FOLDER);
+		FileManipulations.deleteFileFromDisk(game.getImage(), realPathToImagesFolder);
 		
 		gameRepo.delete(game);
 		
@@ -220,55 +227,6 @@ public class GamesController {
 		}
 		
 		return genres;
-	}
-	
-	
-	/**
-	 * Saves the image to the disk with custom name
-	 * 
-	 * @param customName
-	 * @param image
-	 * @return the name of the image with file extension
-	 */
-	private String saveImageToDisk(String customName, MultipartFile image) {
-		try {
-			String imageName;
-			
-			String uploadsDir = "/assets/images/games/";
-			imageName = customName + "." + image.getContentType().split("/")[1];
-			
-            String realPathtoUploads =  request.getServletContext().getRealPath(uploadsDir); // get the path to webapp folder and upload folder in it
-            
-            if(!new File(realPathtoUploads).exists()) {
-                new File(realPathtoUploads).mkdirs();
-            }
-
-            String filePath = realPathtoUploads + imageName;
-            File dest = new File(filePath);
-            
-			image.transferTo(dest);
-			
-			return imageName;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	
-	/**
-	 * Deletes image from the disk
-	 * @param imageName
-	 */
-	private void deleteImageFromDisk(String imageName) {
-		String uploadsDir = "/assets/images/games/";
-		
-        String realPathtoUploads =  request.getServletContext().getRealPath(uploadsDir); // get the path to webapp folder and upload folder in it
-
-        String filePath = realPathtoUploads + imageName;
-        File dest = new File(filePath);
-        
-        dest.delete();
 	}
 	
 	
