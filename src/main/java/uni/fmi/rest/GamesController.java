@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,10 +32,13 @@ public class GamesController {
 	DeveloperRepository developerRepo;
 	GenreRepository genreRepo;
 	
-	public GamesController(GameRepository gameRepo, DeveloperRepository developerRepo, GenreRepository genreRepo) {
+	HttpServletRequest request;
+	
+	public GamesController(GameRepository gameRepo, DeveloperRepository developerRepo, GenreRepository genreRepo, HttpServletRequest request) {
 		this.gameRepo = gameRepo;
 		this.developerRepo = developerRepo;
 		this.genreRepo = genreRepo;
+		this.request = request;
 	}
 	
 	
@@ -65,8 +69,7 @@ public class GamesController {
 			@RequestParam(name = "description", required = false) String description,
 			@RequestParam(name = "image", required = false) MultipartFile image,
 			@RequestParam(name = "developer_id", required = false, defaultValue = "0") int developer_id,
-			@RequestParam(name = "genres_id_list", required = false) List<Integer> genres_id_list,
-			HttpServletRequest request) {
+			@RequestParam(name = "genres_id_list", required = false) List<Integer> genres_id_list) {
 		
 		// if the game already exist
 		if(gameRepo.findByName(name) != null) {
@@ -92,24 +95,8 @@ public class GamesController {
 		
 		// if there is image parameter
 		if(image != null) {
-			try {
-				String uploadsDir = "/assets/images/games/";
-				imageName = "game-" + name + "." + image.getContentType().split("/")[1];
-				
-                String realPathtoUploads =  request.getServletContext().getRealPath(uploadsDir); // get the path to webapp folder and upload folder in it
-                
-                if(!new File(realPathtoUploads).exists()) {
-                    new File(realPathtoUploads).mkdirs();
-                }
-
-                // String orgName = image.getOriginalFilename();
-                String filePath = realPathtoUploads + imageName;
-                File dest = new File(filePath);
-                
-				image.transferTo(dest);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			String customName = "game-" + generateRandomString();
+			imageName = saveImageToDisk(customName, image);
 		}
 		
 		GameModel game = new GameModel();
@@ -135,7 +122,7 @@ public class GamesController {
 			@RequestParam(name = "id") int id,
 			@RequestParam(name = "name", required = false) String name,
 			@RequestParam(name = "description", required = false) String description,
-			@RequestParam(name = "image", required = false) String image,
+			@RequestParam(name = "image", required = false) MultipartFile image,
 			@RequestParam(name = "developer_id", required = false, defaultValue = "0") int developer_id,
 			@RequestParam(name = "genres_id_list", required = false) List<Integer> genres_id_list) {
 		
@@ -163,10 +150,24 @@ public class GamesController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
+		// here we will save the image name if there is image parameter
+		String imageName = null;
+		
+		// if there is image parameter
+		if(image != null) {
+			// delete the old image
+			String oldImageName = gameRepo.findById(id).getImage();
+			deleteImageFromDisk(oldImageName);
+			
+			// save the new image
+			String customName = generateRandomString();
+			imageName = saveImageToDisk(customName, image);
+		}
+		
 		GameModel game = gameRepo.findById(id);
 		if(name != null) game.setName(name);
 		if(description != null) game.setDescription(description);
-		if(image != null) game.setDescription(image);
+		if(image != null) game.setImage(imageName);
 		if(developer_id != 0) game.setDeveloper(developer);
 		if(genres_id_list != null) game.setGenres(genres);
 		
@@ -186,6 +187,9 @@ public class GamesController {
 		}
 		
 		GameModel game = gameRepo.findById(id);
+		
+		// delete the game image from the disk
+		deleteImageFromDisk(game.getImage());
 		
 		gameRepo.delete(game);
 		
@@ -216,6 +220,63 @@ public class GamesController {
 		}
 		
 		return genres;
+	}
+	
+	
+	/**
+	 * Saves the image to the disk with custom name
+	 * 
+	 * @param customName
+	 * @param image
+	 * @return the name of the image with file extension
+	 */
+	private String saveImageToDisk(String customName, MultipartFile image) {
+		try {
+			String imageName;
+			
+			String uploadsDir = "/assets/images/games/";
+			imageName = customName + "." + image.getContentType().split("/")[1];
+			
+            String realPathtoUploads =  request.getServletContext().getRealPath(uploadsDir); // get the path to webapp folder and upload folder in it
+            
+            if(!new File(realPathtoUploads).exists()) {
+                new File(realPathtoUploads).mkdirs();
+            }
+
+            String filePath = realPathtoUploads + imageName;
+            File dest = new File(filePath);
+            
+			image.transferTo(dest);
+			
+			return imageName;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
+	/**
+	 * Deletes image from the disk
+	 * @param imageName
+	 */
+	private void deleteImageFromDisk(String imageName) {
+		String uploadsDir = "/assets/images/games/";
+		
+        String realPathtoUploads =  request.getServletContext().getRealPath(uploadsDir); // get the path to webapp folder and upload folder in it
+
+        String filePath = realPathtoUploads + imageName;
+        File dest = new File(filePath);
+        
+        dest.delete();
+	}
+	
+	
+	private String generateRandomString() {
+		int length = 30;
+		boolean useLetters = true;
+		boolean useNumbers = true;
+		return RandomStringUtils.random(length, useLetters, useNumbers);
 	}
 	
 }
