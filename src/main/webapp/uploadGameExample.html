@@ -6,20 +6,22 @@
 <body>
 
 <form id="myForm">
-	<input id="name" type="text" value="sadgamew">
+	<input id="name" type="text" value="Roller Coaster Tycoon ">
 	<input id="image" type="file" accept="image/*">
-	
+    <input id="genres" type="text"> <!-- example: 1, 2 -->
+    
 	<input type="submit" value="go">
 </form>
 
 <script>
 $('#myForm').submit(function(e){
 	e.preventDefault();
-	
+
 	var formData = new FormData();
 	
 	formData.append("name", $("#name").val())
-	formData.append("image", $("#image")[0].files[0]);
+    formData.append("image", $("#image")[0].files[0]);
+    formData.append("genres_id_list", $("#genres").val()); 
 	
     $.ajax({
         url:'/game/insert',

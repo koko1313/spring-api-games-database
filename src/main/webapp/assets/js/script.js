@@ -4,8 +4,28 @@
 var PATH_TO_IMAGES = "assets/images/games/";
 var resultDesign = 1;
 
-var genre = null; // ще ни служи за зареждане по жанр
-var platform = null; // ще ни служи за зареждане по платформа
+// ##########################################################################
+
+var genre = 0; // ще ни служи за зареждане по жанр
+var platform = 0; // ще ни служи за зареждане по платформа
+
+function setGenre(id) {
+    genre = id;
+}
+
+function getGenre() {
+    return genre;
+}
+
+function setPlatform(id) {
+    platform = id;
+}
+
+function getPlatform() {
+    return platform;
+}
+
+// ##########################################################################
 
 // сетва избрания дизайн за показване на резултатите и ги визуализира по него
 function setResultDesign(designNumber) {
@@ -40,8 +60,6 @@ function showResult(resp) {
 
 // показва резултата по първия дизайн
 function showResultDesign1(games) {
-    console.log(games);
-
     for(var i=0; i<games.length; i++) {
         var htmlResult = $("#result-template-1").clone();
         htmlResult.attr("id", "");
@@ -52,7 +70,9 @@ function showResultDesign1(games) {
         htmlResult.find('h3').text(game.name);
 
         // картинка
-        htmlResult.find('img').attr("src", PATH_TO_IMAGES + game.image);
+        if(game.image != null) {
+            htmlResult.find('img').attr("src", PATH_TO_IMAGES + game.image);
+        }
 
         // разработчици
         var developer = null;
@@ -95,7 +115,9 @@ function showResultDesign2(games) {
         htmlResult.find('h3').text(game.name);
 
         // картинка
-        htmlResult.find('img').attr("src", PATH_TO_IMAGES + game.image);
+        if(game.image != null) {
+            htmlResult.find('img').attr("src", PATH_TO_IMAGES + game.image);
+        }
 
         // разработчици
         var developer = null;
@@ -128,49 +150,75 @@ function showResultDesign2(games) {
     $("#results").append(resultCards);
 }
 
+// ##########################################################################
+
 // търси и показва резултатите
 function search(param) {
-    if(param) {
-        clearResults(); // когато е зададен нов параметър, трием показаните до момента резултати
+    clearResults(); // когато е зададен нов параметър, трием показаните до момента резултати
 
-        if(param.genre) {
-            genre = param.genre;
-        }
-
-        if(param.platform) {
-            platform = param.platform;
-        }
+    if(getGenre() != 0 && getPlatform() != 0) {
+        ajax("GET", "/game/search?genres_id_list="+getGenre()+"&platforms_id_list="+getPlatform(), showResult);
     }
-
-    ajax("GET", "/game/all", showResult);
+    else if(getGenre() != 0) {
+        ajax("GET", "/game/search?genres_id_list="+getGenre(), showResult);
+    }
+    else if(getPlatform() != 0) {
+        ajax("GET", "/game/search?platforms_id_list="+getPlatform(), showResult);
+    }
+    else {
+        ajax("GET", "/game/all", showResult);
+    }
 }
+
+// ##########################################################################
 
 // селектиране на жанр - извикава се когато се кликне бутона на някой жанр
 function selectGenre(htmlItem) {
-
-    // премахваме класът за активен бутон от всички бутони
-    var genres = $(htmlItem).parent().children();
-    for(var i=0; i<genres.length; i++) {
-        genres.removeClass("active");
-    }
-
-    $(htmlItem).addClass("active");
     var genreId = htmlItem.dataset.value;
 
     var genreName = $(htmlItem).text();
     $("#openGenresModalButton").text("Жанр: "+ genreName);
     $("#genresModal").modal('hide');
 
-    // да се покажат всички
-    if(genreId == 0) {
-        genre = null;
-        clearResults();
-        search();
-        return;
+    setGenre(genreId);
+
+    // правим активни избраните жанрове и неактивни - неизбраните
+    var genres = $(htmlItem).parent().children();
+    for(var i=0; i<genres.length; i++) {
+        if(getGenre() == genres[i].dataset.value) {
+            $(genres[i]).addClass("active");
+        } else {
+            $(genres[i]).removeClass("active");
+        }
     }
 
-    search({genre: genreId});
+    search();
 }
+
+// селектиране на платформа - извиква се когато се кликне бутона на някоя платформа
+function selectPlatform(htmlItem) {
+    var platformId = htmlItem.dataset.value;
+
+    var platformName = $(htmlItem).text();
+    $("#openPlatformsModalButton").text("Платформа: "+ platformName);
+    $("#platformsModal").modal('hide');
+
+    setPlatform(platformId);
+
+    // правим активни избраните платформи и неактивни - неизбраните
+    var platforms = $(htmlItem).parent().children();
+    for(var i=0; i<platforms.length; i++) {
+        if(getPlatform() == platforms[i].dataset.value) {
+            $(platforms[i]).addClass("active");
+        } else {
+            $(platforms[i]).removeClass("active");
+        }
+    }
+
+    search();
+}
+
+// ##########################################################################
 
 // попълва филтъра с жанровете
 function loadGenres() {
@@ -207,6 +255,8 @@ function loadFilters() {
     loadGenres();
     loadPlatforms();
 }
+
+// ##########################################################################
 
 var position = $(window).scrollTop(); 
 $(window).scroll(function() {

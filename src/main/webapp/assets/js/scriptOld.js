@@ -112,34 +112,8 @@ function generateArrayOfGames(resp) {
 // търси и показва резултатите
 
 // селектиране на жанр - извикава се когато се кликне бутона на някой жанр
-function selectGenre(htmlItem) {
-
-    // премахваме класът за активен бутон от всички бутони
-    var genres = $(htmlItem).parent().children();
-    for(var i=0; i<genres.length; i++) {
-        genres.removeClass("active");
-    }
-
-    $(htmlItem).addClass("active");
-    var genreId = htmlItem.dataset.value;
-
-    var genreName = $(htmlItem).text();
-    $("#openGenresModalButton").text("Жанр: "+ genreName);
-    $("#genresModal").modal('hide');
-
-    // да се покажат всички
-    if(genreId == 0) {
-        genre = null;
-        clearResults();
-        search();
-        return;
-    }
-
-    search({genre: genreId});
-}
 
 // селектиране на платформа - извиква се когато се кликне бутона на някоя платформа
-/*
 function selectPlatform(htmlItem) {
 
     // премахваме класът за активен бутон от всички бутони
@@ -165,7 +139,6 @@ function selectPlatform(htmlItem) {
 
     search({platform: platformId});
 }
-*/
 
 // тригърва сортирането по дата
 /*
