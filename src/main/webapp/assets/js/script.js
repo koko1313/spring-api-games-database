@@ -6,23 +6,165 @@ var resultDesign = 1;
 
 // ##########################################################################
 
-var genre = 0; // ще ни служи за зареждане по жанр
-var platform = 0; // ще ни служи за зареждане по платформа
+var selectedGenres = [0];
 
 function setGenre(id) {
-    genre = id;
+    id = parseInt(id);
+
+    // ако в масива има елемент 0 го премахваме
+    if(selectedGenres[0] == 0) {
+        selectedGenres.pop();
+    }
+
+    // ако влезе id 0, изчистваме масива
+    if(id == 0) {
+        selectedGenres = [];
+    }
+
+    // ако в масива го има елемента го махаме
+    if(selectedGenres.includes(id)) {
+        if(selectedGenres.indexOf(id) != -1) {
+            selectedGenres.splice(selectedGenres.indexOf(id), 1);
+        }
+    } 
+    // иначе го добавяме
+    else {
+        selectedGenres.push(id);
+    }
 }
 
-function getGenre() {
-    return genre;
-}
+var selectedPlatforms = [0];
 
 function setPlatform(id) {
-    platform = id;
+    id = parseInt(id);
+
+    // ако в масива има елемент 0 го премахваме
+    if(selectedPlatforms[0] == 0) {
+        selectedPlatforms.pop();
+    }
+
+    // ако влезе id 0, изчистваме масива
+    if(id == 0) {
+        selectedPlatforms = [];
+    }
+
+    // ако в масива го има елемента го махаме
+    if(selectedPlatforms.includes(id)) {
+        if(selectedPlatforms.indexOf(id) != -1) {
+            selectedPlatforms.splice(selectedPlatforms.indexOf(id), 1);
+        }
+    } 
+    // иначе го добавяме
+    else {
+        selectedPlatforms.push(id);
+    }
 }
 
-function getPlatform() {
-    return platform;
+// селектиране на жанр - извикава се когато се кликне бутона на някой жанр
+function selectGenre(htmlItem) {
+    var genreId = htmlItem.dataset.value;
+
+    setGenre(genreId);
+
+    if(genreId == 0) {
+        $("#openGenresModalButton").text("Жанр (Всички)");
+    } else {
+        $("#openGenresModalButton").text("Жанр ("+ selectedGenres.length +")");
+    }
+    
+    var genresItems = $(htmlItem).parent().children();
+
+    // ако сме селектирали Всички - правим всички неактивни
+    if(genreId == 0) {
+        for(var i=0; i<genresItems.length; i++) {
+            $(genresItems[i]).removeClass("active");
+        }
+        $(genresItems[0]).addClass("active");
+    // иначе правим елемента "Всички" неактивен и активираме/деактивираме избрания
+    } else {
+        $(genresItems[0]).removeClass("active");
+        $(htmlItem).toggleClass("active");
+    }
+
+    // ако нямаме нищо избрано - викаме клик евент на първия елемент, който ни е "Всики"
+    if(selectedGenres.length == 0) {
+        $(genresItems[0]).click();
+        return;
+    }
+
+    search();
+}
+
+// селектиране на платформа - извиква се когато се кликне бутона на някоя платформа
+function selectPlatform(htmlItem) {
+    var platformId = htmlItem.dataset.value;
+
+    setPlatform(platformId);
+
+    if(platformId == 0) {
+        $("#openPlatformsModalButton").text("Платформа (Всички)");
+    } else {
+        $("#openPlatformsModalButton").text("Платформа ("+ selectedPlatforms.length +")");
+    }
+    
+    var platformItems = $(htmlItem).parent().children();
+    // ако сме селектирали Всички - правим всички неактивни и само първия - активен
+    if(platformId == 0) {
+        for(var i=0; i<platformItems.length; i++) {
+            $(platformItems[i]).removeClass("active");
+        }
+        $(platformItems[0]).addClass("active");
+    // иначе правим елемента "Всички" неактивен и активираме/деактивираме избрания
+    } else {
+        $(platformItems[0]).removeClass("active");
+        $(htmlItem).toggleClass("active");
+    }
+
+    // ако нямаме нищо избрано - викаме клик евент на първия елемент, който ни е "Всики"
+    if(selectedPlatforms.length == 0) {
+        $(platformItems[0]).click();
+        return;
+    } 
+
+    search();
+}
+
+// ##########################################################################
+
+// попълва филтъра с жанровете
+function loadGenres() {
+    ajax("GET", "/genre/all", function(resp) {
+        for(var i=0; i<resp.length; i++) {
+            var genreItem = $("#genreItemTemplate").clone();
+            genreItem.removeAttr("id");
+            genreItem.attr("data-value", resp[i].id);
+            genreItem.text(resp[i].name);
+
+            genreItem.show();
+            $("#genresModal").find(".modal-body").find("ul").append(genreItem);
+        }
+    });
+}
+
+// попълва филтъра с платформите
+function loadPlatforms() {
+    ajax("get", "platform/all", function(resp) {
+        for(var i=0; i<resp.length; i++) {
+            var platformItem = $("#platformItemTemplate").clone();
+            platformItem.removeAttr("id");
+            platformItem.attr("data-value", resp[i].id);
+            platformItem.text(resp[i].name);
+
+            platformItem.show();
+            $("#platformsModal").find(".modal-body").find("ul").append(platformItem);
+        }
+    });
+}
+
+// попълва всички филтри
+function loadFilters() {
+    loadGenres();
+    loadPlatforms();
 }
 
 // ##########################################################################
@@ -153,107 +295,21 @@ function showResultDesign2(games) {
 // ##########################################################################
 
 // търси и показва резултатите
-function search(param) {
+function search() {
     clearResults(); // когато е зададен нов параметър, трием показаните до момента резултати
 
-    if(getGenre() != 0 && getPlatform() != 0) {
-        ajax("GET", "/game/search?genres_id_list="+getGenre()+"&platforms_id_list="+getPlatform(), showResult);
-    }
-    else if(getGenre() != 0) {
-        ajax("GET", "/game/search?genres_id_list="+getGenre(), showResult);
-    }
-    else if(getPlatform() != 0) {
-        ajax("GET", "/game/search?platforms_id_list="+getPlatform(), showResult);
-    }
-    else {
+    if(selectedGenres.includes(0) && selectedPlatforms.includes(0)) {
         ajax("GET", "/game/all", showResult);
     }
-}
-
-// ##########################################################################
-
-// селектиране на жанр - извикава се когато се кликне бутона на някой жанр
-function selectGenre(htmlItem) {
-    var genreId = htmlItem.dataset.value;
-
-    var genreName = $(htmlItem).text();
-    $("#openGenresModalButton").text("Жанр: "+ genreName);
-    $("#genresModal").modal('hide');
-
-    setGenre(genreId);
-
-    // правим активни избраните жанрове и неактивни - неизбраните
-    var genres = $(htmlItem).parent().children();
-    for(var i=0; i<genres.length; i++) {
-        if(getGenre() == genres[i].dataset.value) {
-            $(genres[i]).addClass("active");
-        } else {
-            $(genres[i]).removeClass("active");
-        }
+    else if(!selectedGenres.includes(0) && !selectedPlatforms.includes(0)) {
+        ajax("GET", "/game/search?genres_id_list=" + selectedGenres.join(",") + "&platforms_id_list=" + selectedPlatforms.join(","), showResult);
     }
-
-    search();
-}
-
-// селектиране на платформа - извиква се когато се кликне бутона на някоя платформа
-function selectPlatform(htmlItem) {
-    var platformId = htmlItem.dataset.value;
-
-    var platformName = $(htmlItem).text();
-    $("#openPlatformsModalButton").text("Платформа: "+ platformName);
-    $("#platformsModal").modal('hide');
-
-    setPlatform(platformId);
-
-    // правим активни избраните платформи и неактивни - неизбраните
-    var platforms = $(htmlItem).parent().children();
-    for(var i=0; i<platforms.length; i++) {
-        if(getPlatform() == platforms[i].dataset.value) {
-            $(platforms[i]).addClass("active");
-        } else {
-            $(platforms[i]).removeClass("active");
-        }
+    else if(!selectedGenres.includes(0)) {
+        ajax("GET", "/game/search?genres_id_list=" + selectedGenres.join(","), showResult);
     }
-
-    search();
-}
-
-// ##########################################################################
-
-// попълва филтъра с жанровете
-function loadGenres() {
-    ajax("GET", "/genre/all", function(resp) {
-        for(var i=0; i<resp.length; i++) {
-            var genreItem = $("#genreItemTemplate").clone();
-            genreItem.removeAttr("id");
-            genreItem.attr("data-value", resp[i].id);
-            genreItem.text(resp[i].name);
-
-            genreItem.show();
-            $("#genresModal").find(".modal-body").find("ul").append(genreItem);
-        }
-    });
-}
-
-// попълва филтъра с платформите
-function loadPlatforms() {
-    ajax("get", "platform/all", function(resp) {
-        for(var i=0; i<resp.length; i++) {
-            var platformItem = $("#platformItemTemplate").clone();
-            platformItem.removeAttr("id");
-            platformItem.attr("data-value", resp[i].id);
-            platformItem.text(resp[i].name);
-
-            platformItem.show();
-            $("#platformsModal").find(".modal-body").find("ul").append(platformItem);
-        }
-    });
-}
-
-// попълва всички филтри
-function loadFilters() {
-    loadGenres();
-    loadPlatforms();
+    else if(!selectedPlatforms.includes(0)) {
+        ajax("GET", "/game/search?platforms_id_list=" + selectedPlatforms.join(","), showResult);
+    }
 }
 
 // ##########################################################################
