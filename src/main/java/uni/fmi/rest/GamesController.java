@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -72,33 +71,19 @@ public class GamesController {
 	@GetMapping(path = "/game/search")
 	public ResponseEntity<List<GameModel>> getByCriteria(
 			@RequestParam(name = "genres_id_list", required = false) List<Integer> genres_id_list,
-			@RequestParam(name = "platforms_id_list", required = false) List<Integer> platforms_id_list,
-			@RequestParam(name = "combinated", required = false, defaultValue = "false") Boolean showCombinated) {
+			@RequestParam(name = "platforms_id_list", required = false) List<Integer> platforms_id_list) {
 		
-		List<GameModel> games = new ArrayList<>(); // here we will add the games matching the criteria
+		List<GameModel> games = new ArrayList<>();
 		
-		// get genres and platforms as objects by its ids
-		List<GenreModel> genres = getGenresById(genres_id_list);
-		List<PlatformModel> platforms = getPlatformsById(platforms_id_list);
-		
-		for(GameModel game : gameRepo.findAll()) {
-			
-			if(genres != null && platforms != null) {
-				if(CollectionUtils.containsAny(game.getGenres(), genres) && CollectionUtils.containsAny(game.getPlatforms(), platforms)) {
-					games.add(game);
-				}
-			} 
-			else if(genres != null) {
-				if(CollectionUtils.containsAny(game.getGenres(), genres)) {
-					games.add(game);
-				}
-			}
-			else if(platforms != null) {
-				if(CollectionUtils.containsAny(game.getPlatforms(), platforms)) {
-					games.add(game);
-				}
-			}
-			
+		// if there is both genres_id_list and platforms_id_list parameters
+		if(genres_id_list != null && platforms_id_list != null) {
+			games = gameRepo.findByGenresIdInAndPlatformsIdIn(genres_id_list, platforms_id_list);
+		}
+		else if(genres_id_list != null) {
+			games = gameRepo.findByGenresIdIn(genres_id_list);
+		}
+		else if(platforms_id_list != null) {
+			games = gameRepo.findByPlatformsIdIn(platforms_id_list);
 		}
 		
 		return new ResponseEntity<>(games, HttpStatus.OK);
