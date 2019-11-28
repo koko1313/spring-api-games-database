@@ -1,6 +1,7 @@
 package uni.fmi.rest;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -69,11 +70,11 @@ public class GamesController {
 	
 
 	@GetMapping(path = "/game/search")
-	public ResponseEntity<List<GameModel>> getByCriteria(
+	public ResponseEntity<HashSet<GameModel>> getByCriteria(
 			@RequestParam(name = "genres_id_list", required = false) List<Integer> genres_id_list,
 			@RequestParam(name = "platforms_id_list", required = false) List<Integer> platforms_id_list) {
 		
-		List<GameModel> games = new ArrayList<>();
+		HashSet<GameModel> games = new HashSet<>();
 		
 		// if there is both genres_id_list and platforms_id_list parameters
 		if(genres_id_list != null && platforms_id_list != null) {
