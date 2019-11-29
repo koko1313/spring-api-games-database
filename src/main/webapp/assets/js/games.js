@@ -11,8 +11,8 @@ function setResultDesign(designNumber) {
 // изчиства всички резултати
 function clearResults() {
     // клонираме си шаблоните
-    var resultTemplate1 = $("#result-template-1").clone();
-    var resultTemplate2 = $("#result-template-2").clone();
+    var resultTemplate1 = $("#resultTemplate1").clone();
+    var resultTemplate2 = $("#resultTemplate2").clone();
     
     // изчистваме
     $("#results").html("");
@@ -35,7 +35,7 @@ function showResult(resp) {
 // показва резултата по първия дизайн
 function showResultDesign1(games) {
     for(var i=0; i<games.length; i++) {
-        var htmlResult = $("#result-template-1").clone();
+        var htmlResult = $("#resultTemplate1").clone();
         htmlResult.attr("id", "");
 
         var game = games[i];
@@ -78,10 +78,10 @@ function showResultDesign1(games) {
 
 // показва резултата по втория дизайн
 function showResultDesign2(games) {
-    var resultCards = $("#result-template-2").clone();
+    var resultCards = $("#resultTemplate2").clone();
 
     for(var i=0; i<games.length; i++) {
-        var htmlResult = $("#result-template-2-card").clone();
+        var htmlResult = $("#resultTemplate2Card").clone();
         $(htmlResult).attr("id", "");
         var game = games[i];
 
