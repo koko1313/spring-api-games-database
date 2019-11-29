@@ -36,7 +36,7 @@ function showResult(resp) {
 function showResultDesign1(games) {
     for(var i=0; i<games.length; i++) {
         var htmlResult = $("#resultTemplate1").clone();
-        htmlResult.attr("id", "");
+        htmlResult.removeAttr("id");
 
         var game = games[i];
 
@@ -82,7 +82,7 @@ function showResultDesign2(games) {
 
     for(var i=0; i<games.length; i++) {
         var htmlResult = $("#resultTemplate2Card").clone();
-        $(htmlResult).attr("id", "");
+        $(htmlResult).removeAttr("id");
         var game = games[i];
 
         // заглавие
