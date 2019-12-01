@@ -102,7 +102,7 @@ public class GamesController {
 		
 		// if the game already exist
 		if(gameRepo.findByName(name) != null) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.CONFLICT);
 		}
 		
 		DeveloperModel developer = getDeveloperById(developer_id);

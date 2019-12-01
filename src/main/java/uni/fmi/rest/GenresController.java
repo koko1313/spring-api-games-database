@@ -51,7 +51,7 @@ public class GenresController {
 		
 		// if the genre already exist
 		if(genreRepo.findByName(genreName) != null) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.CONFLICT);
 		}
 		
 		GenreModel genre = new GenreModel();

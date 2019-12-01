@@ -51,7 +51,7 @@ public class PlatformsController {
 		
 		// if the platform already exist
 		if(platformRepo.findByName(platformName) != null) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.CONFLICT);
 		}
 		
 		PlatformModel platform = new PlatformModel();

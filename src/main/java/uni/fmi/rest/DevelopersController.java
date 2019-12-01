@@ -52,7 +52,7 @@ public class DevelopersController {
 		
 		// if the developer already exist
 		if(developerRepo.findByName(developerName) != null) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.CONFLICT);
 		}
 		
 		DeveloperModel developer = new DeveloperModel();
