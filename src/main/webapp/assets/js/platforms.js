@@ -31,6 +31,117 @@ function search() {
     ajax("GET", "platform/all", showResult);
 }
 
+// override modal close event
+$('#platformFormModal').on('hidden.bs.modal', function () {
+    $("#platformInputId").val("");
+    $("#platformInputName").val("");
+    $("#insertPlatformButton").show();
+    $("#updatePlatformButton").hide();
+});
+
+// ########################################################################
+
+function insertPlatform() {
+    var platformName = $("#platformInputName").val();
+
+    $.ajax({
+        method: "POST",
+        url: "platform/insert",
+        data: {
+            name: platformName
+        },
+        complete: function(data) {
+            switch(data.status) {
+                case 201: 
+                    $("#platformFormModal").modal("hide");
+                    search();
+                    break;
+                case 409:
+                    alert("Има платформа с това име!");
+                    break;
+                case 404:
+                    alert("Нещо се обърка");
+                    break;
+            }
+            
+        }
+    });
+}
+
+function editPlatform(id) {
+    $.ajax({
+        method: "GET",
+        url: "platform",
+        data: {
+            id: id
+        },
+        complete: function(data) {
+            switch(data.status) {
+                case 200: 
+                    $("#platformInputId").val(data.responseJSON.id);
+                    $("#platformInputName").val(data.responseJSON.name);
+                    $("#insertPlatformButton").hide();
+                    $("#updatePlatformButton").show();
+                    $("#platformFormModal").modal("show");
+                    break;
+                case 404:
+                    alert("Платформата не беше намерена!");
+                    break;
+            }
+        }
+    });
+}
+
+function updatePlatform() {
+    var platformId = $("#platformInputId").val();
+    var platformName = $("#platformInputName").val();
+
+    $.ajax({
+        method: "PUT",
+        url: "platform/update",
+        data: {
+            id: platformId,
+            name: platformName
+        },
+        complete: function(data) {
+            switch(data.status) {
+                case 200: 
+                    $("#platformFormModal").modal("hide");
+                    search();
+                    break;
+                case 409:
+                    alert("Има платформа с това име!");
+                    break;
+                case 404:
+                    alert("Платформата, която се опитвате да редактирате не беше намерена!");
+                    break;
+            }
+        }
+    });
+}
+
+function deletePlatform(id) {
+    if(!confirm("Сигурни ли сте?")) return;
+
+    $.ajax({
+        method: "DELETE",
+        url: "platform/delete",
+        data: {
+            id: id
+        },
+        complete: function(data) {
+            switch(data.status) {
+                case 200:
+                    search();
+                    break;
+                case 404:
+                    alert("Платформата, която се опитвате да изтриете не беше намерена!");
+                    break;
+            }
+        }
+    });
+}
+
 
 // ########################################################################
 
