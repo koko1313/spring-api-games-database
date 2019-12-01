@@ -80,11 +80,15 @@ public class PlatformsController {
 		}
 		
 		// if platform with this name already exist
-		if(platformRepo.findByName(platformName) != null) {
-			return new ResponseEntity<>(HttpStatus.CONFLICT);
+		PlatformModel platform = platformRepo.findByName(platformName);
+		if(platform != null) {
+			// and it's different than current
+			if(platform.getId() != id) {
+				return new ResponseEntity<>(HttpStatus.CONFLICT);
+			}
 		}
 		
-		PlatformModel platform = platformRepo.findById(id);
+		platform = platformRepo.findById(id);
 		platform.setName(platformName);
 		
 		platform = platformRepo.saveAndFlush(platform);

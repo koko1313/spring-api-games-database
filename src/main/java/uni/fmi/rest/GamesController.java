@@ -173,8 +173,12 @@ public class GamesController {
 		}
 		
 		// if game with this name already exist
-		if(gameRepo.findByName(name) != null) {
-			return new ResponseEntity<>(HttpStatus.CONFLICT);
+		GameModel game = gameRepo.findByName(name);
+		if(game != null) {
+			// and it's different than current
+			if(game.getId() != id) {
+				return new ResponseEntity<>(HttpStatus.CONFLICT);
+			}
 		}
 		
 		DeveloperModel developer = getDeveloperById(developer_id);
@@ -214,7 +218,7 @@ public class GamesController {
 			imageName = FileManipulations.saveFileToDisk(customName, image, realPathToImagesFolder);
 		}
 		
-		GameModel game = gameRepo.findById(id);
+		game = gameRepo.findById(id);
 		if(name != null) game.setName(name);
 		if(description != null) game.setDescription(description);
 		if(image != null) game.setImage(imageName);

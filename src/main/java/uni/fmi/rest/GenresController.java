@@ -80,11 +80,15 @@ public class GenresController {
 		}
 		
 		// if genre with this name already exist
-		if(genreRepo.findByName(genreName) != null) {
-			return new ResponseEntity<>(HttpStatus.CONFLICT);
+		GenreModel genre = genreRepo.findByName(genreName);
+		if(genre != null) {
+			// and it's different than current
+			if(genre.getId() != id) {
+				return new ResponseEntity<>(HttpStatus.CONFLICT);
+			}
 		}
 		
-		GenreModel genre = genreRepo.findById(id);
+		genre = genreRepo.findById(id);
 		genre.setName(genreName);
 		
 		genre = genreRepo.saveAndFlush(genre);

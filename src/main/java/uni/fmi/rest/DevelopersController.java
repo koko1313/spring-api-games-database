@@ -82,11 +82,15 @@ public class DevelopersController {
 		}
 		
 		// if developer with this name already exist
-		if(developerRepo.findByName(developerName) != null) {
-			return new ResponseEntity<>(HttpStatus.CONFLICT);
+		DeveloperModel developer = developerRepo.findByName(developerName);
+		if(developer != null) {
+			// and it's different than current
+			if(developer.getId() != id) {
+				return new ResponseEntity<>(HttpStatus.CONFLICT);
+			}
 		}
 		
-		DeveloperModel developer = developerRepo.findById(id);
+		developer = developerRepo.findById(id);
 		if(developerName != null) developer.setName(developerName);
 		if(description != null) developer.setDescription(description);
 		
