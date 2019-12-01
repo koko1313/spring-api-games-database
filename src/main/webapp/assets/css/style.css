@@ -29,7 +29,7 @@ hr {
 /* end of main settings */
 
 /* customize some bootstrap classes */
-.active {
+.modal li.active {
     background-color: var(--primary-color)!important;
     border: none;
 }
