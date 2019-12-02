@@ -36,6 +36,7 @@ function search() {
 $('#developerFormModal').on('hidden.bs.modal', function () {
     $("#developerInputId").val("");
     $("#developerInputName").val("");
+    $("#developerInputDescription").val("");
     $("#insertDeveloperButton").show();
     $("#updateDeveloperButton").hide();
 });
