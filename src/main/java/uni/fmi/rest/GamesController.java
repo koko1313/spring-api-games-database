@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,7 @@ import uni.fmi.repositories.GameRepository;
 import uni.fmi.repositories.GenreRepository;
 import uni.fmi.repositories.PlatformRepository;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class GamesController {
 
@@ -46,7 +48,6 @@ public class GamesController {
 		this.platformRepo = platformRepo;
 		this.request = request;
 	}
-	
 	
 	@GetMapping(path = "/game/all")
 	public ResponseEntity<List<GameModel>> getAll() {
@@ -230,8 +231,7 @@ public class GamesController {
 		
 		return new ResponseEntity<>(game, HttpStatus.OK);
 	}
-	
-	
+
 	@DeleteMapping(path = "/game/delete")
 	public ResponseEntity<Boolean> delete(
 			@RequestParam(name = "id") int id) {
