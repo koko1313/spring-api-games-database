@@ -28,7 +28,7 @@ function showResult(genres) {
 
 function search() {
     clearResults();
-    ajax("GET", "genre/all", showResult);
+    ajax("GET", "/genre/all", showResult);
 }
 
 // override modal close event
@@ -46,7 +46,7 @@ function insertGenre() {
 
     $.ajax({
         method: "POST",
-        url: "genre/insert",
+        url: SERVER_URL + "/genre/insert",
         data: {
             name: genreName
         },
@@ -71,7 +71,7 @@ function insertGenre() {
 function editGenre(id) {
     $.ajax({
         method: "GET",
-        url: "genre",
+        url: SERVER_URL + "/genre",
         data: {
             id: id
         },
@@ -98,7 +98,7 @@ function updateGenre() {
 
     $.ajax({
         method: "PUT",
-        url: "genre/update",
+        url: SERVER_URL + "/genre/update",
         data: {
             id: genreId,
             name: genreName
@@ -125,7 +125,7 @@ function deleteGenre(id) {
 
     $.ajax({
         method: "DELETE",
-        url: "genre/delete",
+        url: SERVER_URL + "/genre/delete",
         data: {
             id: id
         },

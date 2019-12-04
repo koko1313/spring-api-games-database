@@ -181,7 +181,7 @@ function loadGenres() {
 
 // попълва филтъра с платформите
 function loadPlatforms() {
-    ajax("get", "platform/all", function(resp) {
+    ajax("get", "/platform/all", function(resp) {
         for(var i=0; i<resp.length; i++) {
             var platformItem = $("#platformItemTemplate").clone();
             platformItem.removeAttr("id");
@@ -331,7 +331,7 @@ function loadInputFields() {
 }
 
 function loadInputGenres() {
-    ajax("get", "genre/all", function(resp) {
+    ajax("get", "/genre/all", function(resp) {
         for(var i=0; i<resp.length; i++) {
             var genreItem = $("#genreInputTemplate").clone();
             genreItem.removeAttr("id");
@@ -347,7 +347,7 @@ function loadInputGenres() {
 }
 
 function loadInputPlatforms() {
-    ajax("get", "platform/all", function(resp) {
+    ajax("get", "/platform/all", function(resp) {
         for(var i=0; i<resp.length; i++) {
             var platformItem = $("#platformInputTemplate").clone();
             platformItem.removeAttr("id");
@@ -363,7 +363,7 @@ function loadInputPlatforms() {
 }
 
 function loadInputDevelopers() {
-    ajax("get", "developer/all", function(resp) {
+    ajax("get", "/developer/all", function(resp) {
         for(var i=0; i<resp.length; i++) {
             var developerItem = $("#developerInputTemplate").clone();
             developerItem.removeAttr("id");
@@ -426,7 +426,7 @@ function insertGame() {
     formData.append("platforms_id_list", platforms);
     
     $.ajax({
-        url:'game/insert',
+        url: SERVER_URL + '/game/insert',
         type:'POST',
         processData: false,
         contentType: false,
@@ -454,7 +454,7 @@ function insertGame() {
 function editGame(id) {
     $.ajax({
         method: "GET",
-        url: "game",
+        url: SERVER_URL + "/game",
         data: {
             id: id
         },
@@ -533,7 +533,7 @@ function updateGame() {
     formData.append("platforms_id_list", platforms);
     
     $.ajax({
-        url:'game/update',
+        url: SERVER_URL + '/game/update',
         type:'PUT',
         processData: false,
         contentType: false,
@@ -563,7 +563,7 @@ function deleteGame(id) {
 
     $.ajax({
         method: "DELETE",
-        url: "game/delete",
+        url: SERVER_URL + "/game/delete",
         data: {
             id: id
         },

@@ -28,7 +28,7 @@ function showResult(platforms) {
 
 function search() {
     clearResults();
-    ajax("GET", "platform/all", showResult);
+    ajax("GET", "/platform/all", showResult);
 }
 
 // override modal close event
@@ -46,7 +46,7 @@ function insertPlatform() {
 
     $.ajax({
         method: "POST",
-        url: "platform/insert",
+        url: SERVER_URL + "/platform/insert",
         data: {
             name: platformName
         },
@@ -71,7 +71,7 @@ function insertPlatform() {
 function editPlatform(id) {
     $.ajax({
         method: "GET",
-        url: "platform",
+        url: SERVER_URL + "/platform",
         data: {
             id: id
         },
@@ -98,7 +98,7 @@ function updatePlatform() {
 
     $.ajax({
         method: "PUT",
-        url: "platform/update",
+        url: SERVER_URL + "/platform/update",
         data: {
             id: platformId,
             name: platformName
@@ -125,7 +125,7 @@ function deletePlatform(id) {
 
     $.ajax({
         method: "DELETE",
-        url: "platform/delete",
+        url: SERVER_URL + "/platform/delete",
         data: {
             id: id
         },

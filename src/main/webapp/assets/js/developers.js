@@ -29,7 +29,7 @@ function showResult(developers) {
 
 function search() {
     clearResults();
-    ajax("GET", "developer/all", showResult);
+    ajax("GET", "/developer/all", showResult);
 }
 
 // override modal close event
@@ -49,7 +49,7 @@ function insertDeveloper() {
 
     $.ajax({
         method: "POST",
-        url: "developer/insert",
+        url: SERVER_URL + "/developer/insert",
         data: {
             name: developerName,
             description: developerDescription
@@ -75,7 +75,7 @@ function insertDeveloper() {
 function editDeveloper(id) {
     $.ajax({
         method: "GET",
-        url: "developer",
+        url: SERVER_URL + "/developer",
         data: {
             id: id
         },
@@ -104,7 +104,7 @@ function updateDeveloper() {
 
     $.ajax({
         method: "PUT",
-        url: "developer/update",
+        url: SERVER_URL + "/developer/update",
         data: {
             id: developerId,
             name: developerName,
@@ -132,7 +132,7 @@ function deleteDeveloper(id) {
 
     $.ajax({
         method: "DELETE",
-        url: "developer/delete",
+        url: SERVER_URL + "/developer/delete",
         data: {
             id: id
         },
