@@ -71,6 +71,13 @@ function showResultDesign1(games) {
         }
         htmlResult.find('.platforms').text(platforms);
 
+        // описание
+        htmlResult.find('.description').text(game.description);
+
+        // edit и delete бутоните
+        htmlResult.find(".game-edit").attr("onClick", "editGame("+ game.id +")");
+        htmlResult.find(".game-delete").attr("onClick", "deleteGame("+ game.id +")");
+
         htmlResult.show();
         $("#results").append(htmlResult);
     }
@@ -115,6 +122,13 @@ function showResultDesign2(games) {
             platforms += game.platforms[j].name;
         }
         htmlResult.find('.platforms').text(platforms);
+
+        // описание
+        htmlResult.find('.description').text(game.description);
+
+        // edit и delete бутоните
+        htmlResult.find(".game-edit").attr("onClick", "editGame("+ game.id +")");
+        htmlResult.find(".game-delete").attr("onClick", "deleteGame("+ game.id +")");
 
         htmlResult.show();
         resultCards.append(htmlResult);
@@ -309,6 +323,266 @@ function selectPlatform(htmlItem) {
 // ########################################################################
 
 
+// попълва жанрове, платформи и разработчици за добавяне на игра
+function loadInputFields() {
+    loadInputGenres();
+    loadInputPlatforms();
+    loadInputDevelopers();
+}
+
+function loadInputGenres() {
+    ajax("get", "genre/all", function(resp) {
+        for(var i=0; i<resp.length; i++) {
+            var genreItem = $("#genreInputTemplate").clone();
+            genreItem.removeAttr("id");
+            genreItem.find("input").attr("id", "inputGenre" + resp[i].id);
+            genreItem.find("input").attr("value", resp[i].id);
+            genreItem.find("label").attr("for", "inputGenre" + resp[i].id);
+            genreItem.find("label").text(resp[i].name);
+
+            genreItem.show();
+            $("#gameInputGenres").append(genreItem);
+        }
+    });
+}
+
+function loadInputPlatforms() {
+    ajax("get", "platform/all", function(resp) {
+        for(var i=0; i<resp.length; i++) {
+            var platformItem = $("#platformInputTemplate").clone();
+            platformItem.removeAttr("id");
+            platformItem.find("input").attr("id", "inputPlatform" + resp[i].id);
+            platformItem.find("input").attr("value", resp[i].id);
+            platformItem.find("label").attr("for", "inputPlatform" + resp[i].id);
+            platformItem.find("label").text(resp[i].name);
+
+            platformItem.show();
+            $("#gameInputPlatforms").append(platformItem);
+        }
+    });
+}
+
+function loadInputDevelopers() {
+    ajax("get", "developer/all", function(resp) {
+        for(var i=0; i<resp.length; i++) {
+            var developerItem = $("#developerInputTemplate").clone();
+            developerItem.removeAttr("id");
+            developerItem.attr("value", resp[i].id);
+            developerItem.text(resp[i].name);
+
+            developerItem.show();
+            $("#gameInputDeveloper").append(developerItem);
+        }
+    });
+}
+
+// ########################################################################
+
+
+// override modal close event
+$('#gameFormModal').on('hidden.bs.modal', function () {
+    $("#gameInputId").val("");
+    $("#gameInputName").val("");
+    $("#gameInputDeveloper").val(0);
+    $("#gameInputImage").val("");
+    $("#gameInputDescription").val("");
+
+    var genresCheckboxes = $("#gameInputGenres").find("input");
+    for(var i = 0; i < genresCheckboxes.length; i++) {
+        $(genresCheckboxes[i]).prop("checked", false);
+    }
+
+    var platformsCheckboxes = $("#gameInputPlatforms").find("input");
+    for(var i = 0; i < platformsCheckboxes.length; i++) {
+        $(platformsCheckboxes[i]).prop("checked", false);
+    }
+
+    $("#insertGameButton").show();
+    $("#updateGameButton").hide();
+});
+
+function insertGame() {
+    var formData = new FormData();
+
+    formData.append("name", $("#gameInputName").val());
+    formData.append("image", $("#gameInputImage")[0].files[0]);
+    formData.append("developer_id", $("#gameInputDeveloper").val());
+    formData.append("description", $("#gameInputDescription").val());
+
+    var genres = "";
+    $.each($("input[name='gameInputGenre']:checked"), function(){
+        genres += $(this).val() + ",";
+    });
+    genres = genres.substring(0, genres.length-1); // премахваме последната запетая
+
+    formData.append("genres_id_list", genres);
+
+    var platforms = "";
+    $.each($("input[name='gameInputPlatform']:checked"), function(){
+        platforms += $(this).val() + ",";
+    });
+    platforms = platforms.substring(0, platforms.length-1); // премахваме последната запетая
+
+    formData.append("platforms_id_list", platforms);
+    
+    $.ajax({
+        url:'game/insert',
+        type:'POST',
+        processData: false,
+        contentType: false,
+        cache: false,
+        data: formData,
+        enctype: 'multipart/form-data',
+        complete: function(data) {
+            switch(data.status) {
+                case 201: 
+                    $("#gameFormModal").modal("hide");
+                    search();
+                    break;
+                case 409:
+                    alert("Има игра с това име!");
+                    break;
+                case 404:
+                    alert("Нещо се обърка");
+                    break;
+            }
+            
+        }
+    });
+}
+
+function editGame(id) {
+    $.ajax({
+        method: "GET",
+        url: "game",
+        data: {
+            id: id
+        },
+        complete: function(data) {
+            switch(data.status) {
+                case 200: 
+                    $("#gameInputId").val(data.responseJSON.id);
+                    $("#gameInputName").val(data.responseJSON.name);
+                    $("#gameInputDescription").val(data.responseJSON.description);
+                    
+                    if(data.responseJSON.developer) {
+                        $("#gameInputDeveloper").val(data.responseJSON.developer.id);
+                    }
+
+                    var genres = data.responseJSON.genres;
+                    var genresCheckboxes = $("#gameInputGenres").find("input");
+
+                    // селектираме жанровете, на които съответства играта
+                    for(var i = 0; i < genres.length; i++) {
+                        for(var j = 0; j < genresCheckboxes.length; j++) {
+                            if(genres[i].id == $(genresCheckboxes[j]).val()) {
+                                $(genresCheckboxes[j]).prop("checked", true);
+                            }
+                        }
+                    }
+
+                    var platforms = data.responseJSON.platforms;
+                    var platformsCheckboxes = $("#gameInputPlatforms").find("input");
+
+                    // селектираме жанровете, на които съответства играта
+                    for(var i = 0; i < platforms.length; i++) {
+                        for(var j = 0; j < platformsCheckboxes.length; j++) {
+                            if(platforms[i].id == $(platformsCheckboxes[j]).val()) {
+                                $(platformsCheckboxes[j]).prop("checked", true);
+                            }
+                        }
+                    }
+
+                    $("#insertGameButton").hide();
+                    $("#updateGameButton").show();
+                    $("#gameFormModal").modal("show");
+                    break;
+                case 404:
+                    alert("Играта не беше намерена!");
+                    break;
+            }
+        }
+    });
+}
+
+function updateGame() {
+    var gameId = $("#gameInputId").val();
+
+    var formData = new FormData();
+    
+    formData.append("id", gameId);
+    formData.append("name", $("#gameInputName").val());
+    formData.append("image", $("#gameInputImage")[0].files[0]);
+    formData.append("developer_id", $("#gameInputDeveloper").val());
+    formData.append("description", $("#gameInputDescription").val());
+
+    var genres = "";
+    $.each($("input[name='gameInputGenre']:checked"), function(){
+        genres += $(this).val() + ",";
+    });
+    genres = genres.substring(0, genres.length-1); // премахваме последната запетая
+
+    formData.append("genres_id_list", genres);
+
+    var platforms = "";
+    $.each($("input[name='gameInputPlatform']:checked"), function(){
+        platforms += $(this).val() + ",";
+    });
+    platforms = platforms.substring(0, platforms.length-1); // премахваме последната запетая
+
+    formData.append("platforms_id_list", platforms);
+    
+    $.ajax({
+        url:'game/update',
+        type:'PUT',
+        processData: false,
+        contentType: false,
+        cache: false,
+        data: formData,
+        enctype: 'multipart/form-data',
+        complete: function(data) {
+            switch(data.status) {
+                case 200: 
+                    $("#gameFormModal").modal("hide");
+                    search();
+                    break;
+                case 409:
+                    alert("Има игра с това име!");
+                    break;
+                case 404:
+                    alert("Играта, която се опитвате да редактирате не беше намерена!");
+                    break;
+            }
+            
+        }
+    });
+}
+
+function deleteGame(id) {
+    if(!confirm("Сигурни ли сте?")) return;
+
+    $.ajax({
+        method: "DELETE",
+        url: "game/delete",
+        data: {
+            id: id
+        },
+        complete: function(data) {
+            switch(data.status) {
+                case 200:
+                    search();
+                    break;
+                case 404:
+                    alert("Играта, която се опитвате да изтриете не беше намерена!");
+                    break;
+            }
+        }
+    });
+}
+
+// ########################################################################
+
+
 var position = $(window).scrollTop(); 
 $(window).scroll(function() {
 
@@ -347,4 +621,5 @@ function goToTopOfPage() {
 $(document).ready(function() {
     search();
     loadFilters();
+    loadInputFields();
 });

@@ -61,6 +61,10 @@
 			</div>
 		</div>
 
+		<div class="row">
+			<span class="btn btn-link" data-toggle="modal" data-target="#gameFormModal">Добави</span>
+		</div>
+
 		<!-- Results -->
 		<div class="row">
 			<div class="col" id="results">
@@ -72,6 +76,10 @@
 						<div class="col">
 							<h3>Game title</h3>
 						</div>
+						<div class="pull-right">
+							<span class="btn btn-warning game-edit" onClick="editGame(1)"><i class="fas fa-edit"></i></span>
+                            <span class="btn btn-danger game-delete" onClick="deleteGame(1)"><i class="fas fa-trash-alt"></i></span>
+						</div>
 					</div>
 
 					<hr class="hr">
@@ -82,9 +90,10 @@
 						</div>
 
 						<div class="col-md">
-							<p>Платформи <span class="platforms">PC, Android, ...</span></p>
-							<p>Разработчици: <span class="developers">Rockstar, ...</span></p>
+							<p>Платформи: <span class="platforms">PC, Android, ...</span></p>
+							<p>Разработчик: <span class="developers">Rockstar, ...</span></p>
 							<p>Жанр: <span class="genres">Action, Horror, ...</span></p>
+							<p>Описание: <span class="description">About the game ...</span></p>
 						</div>
 					</div>
 
@@ -98,10 +107,15 @@
 						<div class="card-body">
 							<h3 class="card-title">Game title</h3>
 							<p class="card-text">
-								<p>Платформи <span class="platforms">PC, Android, ...</span></p>
-								<p>Разработчици: <span class="developers">Rockstar, ...</span></p>
+								<p>Платформи: <span class="platforms">PC, Android, ...</span></p>
+								<p>Разработчик: <span class="developers">Rockstar, ...</span></p>
 								<p>Жанр: <span class="genres">Action, Horror, ...</span></p>
+								<p>Описание: <span class="description">About the game ...</span></p>
 							</p>
+						</div>
+						<div class="card-footer text-right">
+							<span class="btn btn-warning game-edit" onClick="editGame(1)"><i class="fas fa-edit"></i></span>
+							<span class="btn btn-danger game-delete" onClick="deleteGame(1)"><i class="fas fa-trash-alt"></i></span>
 						</div>
 					</div>
 				</div>
@@ -169,6 +183,70 @@
 					</div>
 				</div>
 			</div>
+	</div>
+
+	<!-- Edit/delete form modal -->
+    <div class="modal fade" id="gameFormModal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Игра</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				</div>
+				<div class="modal-body">
+
+					<input type="hidden" id="gameInputId">
+
+					<div class="form-group">
+						<label for="gameInputName">Име</label>
+						<input type="text" id="gameInputName" class="form-control" placeholder="Име">
+					</div>
+
+					<div class="form-group" id="gameInputGenres">
+						<label>Жанрове</label> <br>
+						<!-- Шаблон за жанр checkbox -->
+						<div id="genreInputTemplate" class="form-check form-check-inline" style="display: none;">
+							<input type="checkbox" class="form-check-input" id="inputGenre0" name="gameInputGenre" value="1">
+							<label class="form-check-label" for="inputGenre0">Horror</label>
+						</div>
+					</div>
+
+					<div class="form-group" id="gameInputPlatforms">
+						<label>Платформи</label> <br>
+						<!-- Шаблон за жанр checkbox -->
+						<div id="platformInputTemplate" class="form-check form-check-inline" style="display: none;">
+							<input type="checkbox" class="form-check-input" id="inputPlatform0" name="gameInputPlatform" value="1">
+							<label class="form-check-label" for="inputPlatform0">PC</label>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label>Разработчик</label>
+						<select class="form-control" id="gameInputDeveloper">
+							<option value="0">Разработчик</option>
+							<!-- Шаблон за разработчик -->
+							<option id="developerInputTemplate" value="" style="display: none;">Atari</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label for="gameInputImage">Изображение</label>
+						<input type="file" class="form-control-file" id="gameInputImage" accept="image/*">
+					</div>
+
+					<div class="form-group">
+						<label for="gameInputDescription">Описание</label>
+						<textarea class="form-control" id="gameInputDescription" placeholder="Описание ..."></textarea>
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Затвори</button>
+					<button type="button" class="btn btn-primary" id="insertGameButton" onClick="insertGame()">Добави</button>
+					<button type="button" class="btn btn-warning" id="updateGameButton" onClick="updateGame()" style="display: none;">Редактирай</button>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<!-- Loading scrips -->
