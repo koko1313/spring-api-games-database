@@ -51,6 +51,11 @@ public class PlatformsController {
 	public ResponseEntity<PlatformModel> insert(
 			@RequestParam(name = "name") String platformName) {
 		
+		// if platformName is null
+		if(platformName.equals("")) {
+			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+		}
+		
 		// if the platform already exist
 		if(platformRepo.findByName(platformName) != null) {
 			return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -79,6 +84,11 @@ public class PlatformsController {
 		// if the platform does not exist
 		if(platformRepo.findById(id) == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		// if platformName is null
+		if(platformName.equals("")) {
+			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 		}
 		
 		// if platform with this name already exist

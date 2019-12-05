@@ -52,6 +52,11 @@ public class DevelopersController {
 			@RequestParam(name = "name") String developerName,
 			@RequestParam(name = "description", required = false) String description) {
 		
+		// if developerName is null
+		if(developerName.equals("")) {
+			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+		}
+		
 		// if the developer already exist
 		if(developerRepo.findByName(developerName) != null) {
 			return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -81,6 +86,11 @@ public class DevelopersController {
 		// if the developer does not exist
 		if(developerRepo.findById(id) == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		// if developerName is null
+		if(developerName.equals("")) {
+			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 		}
 		
 		// if developer with this name already exist

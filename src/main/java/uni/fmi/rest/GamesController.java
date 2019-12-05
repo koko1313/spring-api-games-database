@@ -101,6 +101,11 @@ public class GamesController {
 			@RequestParam(name = "genres_id_list", required = false) List<Integer> genres_id_list,
 			@RequestParam(name = "platforms_id_list", required = false)List<Integer> platforms_id_list) {
 		
+		// if the name of the game is null
+		if(name.equals("")) {
+			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+		}
+		
 		// if the game already exist
 		if(gameRepo.findByName(name) != null) {
 			return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -171,6 +176,11 @@ public class GamesController {
 		// if the game does not exist
 		if(gameRepo.findById(id) == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		// if the name of the game is null
+		if(name.equals("")) {
+			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 		}
 		
 		// if game with this name already exist

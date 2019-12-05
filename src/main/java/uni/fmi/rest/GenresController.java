@@ -51,6 +51,11 @@ public class GenresController {
 	public ResponseEntity<GenreModel> insert(
 			@RequestParam(name = "name") String genreName) {
 		
+		// if genreName is null
+		if(genreName.equals("")) {
+			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+		}
+		
 		// if the genre already exist
 		if(genreRepo.findByName(genreName) != null) {
 			return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -79,6 +84,11 @@ public class GenresController {
 		// if the genre does not exist
 		if(genreRepo.findById(id) == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		// if genreName is null
+		if(genreName.equals("")) {
+			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 		}
 		
 		// if genre with this name already exist
