@@ -262,6 +262,11 @@ public class GamesController {
 		return new ResponseEntity<>(true, HttpStatus.OK);
 	}
 	
+	@GetMapping(path = "/images-folder")
+	public ResponseEntity<String> getPathToImagesFolder() {
+		return new ResponseEntity<>(request.getServletContext().getRealPath(PATH_TO_IMAGES_FOLDER), HttpStatus.OK);
+	}
+	
 	
 	// #######################################################################
 	
