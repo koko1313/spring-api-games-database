@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import uni.fmi.imageManipulations.FileManipulations;
+import uni.fmi.fileManipulations.FileManipulations;
 import uni.fmi.models.DeveloperModel;
 import uni.fmi.models.GameModel;
 import uni.fmi.models.GenreModel;

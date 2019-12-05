@@ -1,4 +1,4 @@
-package uni.fmi.imageManipulations;
+package uni.fmi.fileManipulations;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.springframework.web.multipart.MultipartFile;
 
 public class FileManipulations {
-
+	
 	/**
 	 * Saves the file to the disk with custom name
 	 * 
