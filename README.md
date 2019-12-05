@@ -1,7 +1,8 @@
 # Games database, providing REST API
 
 [**Documentation**](../master/Games-Database-API_Documentation.pdf)
-The [**front-end project**], containing all CRUD operations with a user interface
+
+The [**front-end project**](https://github.com/koko1313/js-api-games-database-front-end), containing all CRUD operations with a user interface
 
 ## Задание
 
