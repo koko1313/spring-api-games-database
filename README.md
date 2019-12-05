@@ -1,6 +1,7 @@
-# Games database with API
+# Games database, providing REST API
 
 [**Documentation**](../master/Games-Database-API_Documentation.pdf)
+The [**front-end project**], containing all CRUD operations with a user interface
 
 ## Задание
 
