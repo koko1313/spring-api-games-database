@@ -8014,3 +8014,21 @@ Caused by: org.h2.jdbc.JdbcSQLNonTransientConnectionException: The connection wa
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:622)
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:429)
 	... 81 more
+2019-12-06 19:39:47 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'' (USERS: ""ID"" INTEGER DEFAULT NEXT VALUE FOR ""PUBLIC"".""SYSTEM_SEQUENCE_A78160B5_0AA7_494E_8ECB_E0878EAD68BD"" NOT NULL NULL_TO_DEFAULT SEQUENCE ""PUBLIC"".""SYSTEM_SEQUENCE_A78160B5_0AA7_494E_8ECB_E0878EAD68BD"")"; SQL statement:
+INSERT INTO "PUBLIC"."USERS"("ID","PASSWORD","USERNAME","ROLE_ID")VALUES(?,?,?,?) [22018-200]
+2019-12-06 19:39:47 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'' (USERS: ""ID"" INTEGER DEFAULT NEXT VALUE FOR ""PUBLIC"".""SYSTEM_SEQUENCE_A78160B5_0AA7_494E_8ECB_E0878EAD68BD"" NOT NULL NULL_TO_DEFAULT SEQUENCE ""PUBLIC"".""SYSTEM_SEQUENCE_A78160B5_0AA7_494E_8ECB_E0878EAD68BD"")"; SQL statement:
+INSERT INTO "PUBLIC"."USERS"("ID","PASSWORD","USERNAME","ROLE_ID")VALUES(?,?,?,?) [22018-200]
+2019-12-06 19:39:54 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'' (USERS: ""ROLE_ID"" INTEGER)"; SQL statement:
+INSERT INTO "PUBLIC"."USERS"("ID","PASSWORD","USERNAME","ROLE_ID")VALUES(?,?,?,?) [22018-200]
+2019-12-06 19:39:54 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'' (USERS: ""ROLE_ID"" INTEGER)"; SQL statement:
+INSERT INTO "PUBLIC"."USERS"("ID","PASSWORD","USERNAME","ROLE_ID")VALUES(?,?,?,?) [22018-200]
+2019-12-06 19:40:50 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'' (USERS: ""ID"" INTEGER DEFAULT NEXT VALUE FOR ""PUBLIC"".""SYSTEM_SEQUENCE_91DA416E_E82C_4EF9_A903_BB754D9E6AB9"" NOT NULL NULL_TO_DEFAULT SEQUENCE ""PUBLIC"".""SYSTEM_SEQUENCE_91DA416E_E82C_4EF9_A903_BB754D9E6AB9"")"; SQL statement:
+INSERT INTO "PUBLIC"."USERS"("ID","PASSWORD","USERNAME")VALUES(?,?,?) [22018-200]
+2019-12-06 19:40:50 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'' (USERS: ""ID"" INTEGER DEFAULT NEXT VALUE FOR ""PUBLIC"".""SYSTEM_SEQUENCE_91DA416E_E82C_4EF9_A903_BB754D9E6AB9"" NOT NULL NULL_TO_DEFAULT SEQUENCE ""PUBLIC"".""SYSTEM_SEQUENCE_91DA416E_E82C_4EF9_A903_BB754D9E6AB9"")"; SQL statement:
+INSERT INTO "PUBLIC"."USERS"("ID","PASSWORD","USERNAME")VALUES(?,?,?) [22018-200]
