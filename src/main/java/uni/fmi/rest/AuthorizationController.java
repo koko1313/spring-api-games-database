@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uni.fmi.models.UserModel;
 import uni.fmi.repositories.UserRepository;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
 @RestController
 public class AuthorizationController {
 
@@ -51,7 +51,7 @@ public class AuthorizationController {
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-	@PostMapping(path = "/logout")
+	@PostMapping(path = "/logout-user")
 	public boolean logout(HttpSession session) {
 		session.invalidate();
 
