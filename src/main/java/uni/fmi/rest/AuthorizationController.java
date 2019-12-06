@@ -61,6 +61,7 @@ public class AuthorizationController {
 	@GetMapping(path = "getWhoAmI")
 	public ResponseEntity<UserModel> getWhoAmI(Authentication authentication) {
 		
+		// if there is no authenticated user
 		if(authentication == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
