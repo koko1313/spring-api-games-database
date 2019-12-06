@@ -48,7 +48,7 @@ public class GamesController {
 		this.platformRepo = platformRepo;
 		this.request = request;
 	}
-	
+
 	@GetMapping(path = "/game/all")
 	public ResponseEntity<List<GameModel>> getAll() {
 		return new ResponseEntity<>(gameRepo.findAll(), HttpStatus.OK);
