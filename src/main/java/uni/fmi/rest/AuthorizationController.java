@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uni.fmi.models.UserModel;
 import uni.fmi.repositories.UserRepository;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class AuthorizationController {
 
@@ -28,12 +30,11 @@ public class AuthorizationController {
 		this.userRepo = userRepo;
 	}
 
-	// have to be with PostMapping
 	@PostMapping(path = "/login")
-	public boolean login(
+	public ResponseEntity<UserModel> login(
 			@RequestParam(value = "username") String username, 
 			@RequestParam(value = "password") String password) {
-
+		
 		UserModel user = userRepo.findUserByUsernameAndPassword(username, password);
 
 		if(user != null) {
@@ -44,13 +45,12 @@ public class AuthorizationController {
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			}
 
-			return true;
+			return new ResponseEntity<>(user, HttpStatus.OK);
 		}
 
-		return false;
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-	// have to be with PostMapping
 	@PostMapping(path = "/logout")
 	public boolean logout(HttpSession session) {
 		session.invalidate();
@@ -58,7 +58,7 @@ public class AuthorizationController {
 		return true;
 	}
 	
-	@GetMapping(path = "getWhoAmI")
+	@GetMapping(path = "/getWhoAmI")
 	public ResponseEntity<UserModel> getWhoAmI(Authentication authentication) {
 		
 		// if there is no authenticated user
@@ -66,7 +66,7 @@ public class AuthorizationController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		
-		String loggedUsername = authentication.getName();
+		String loggedUsername = SecurityContextHolder.getContext().getAuthentication().getName();
 		UserModel loggedUser = userRepo.findByUsername(loggedUsername);
 		
 		return new ResponseEntity<>(loggedUser, HttpStatus.OK);
