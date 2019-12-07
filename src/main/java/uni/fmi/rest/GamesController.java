@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,10 +51,12 @@ public class GamesController {
 		this.request = request;
 	}
 
+	
 	@GetMapping(path = "/game/all")
 	public ResponseEntity<List<GameModel>> getAll() {
 		return new ResponseEntity<>(gameRepo.findAll(), HttpStatus.OK);
 	}
+	
 	
 	@GetMapping(path = "/game")
 	public ResponseEntity<GameModel> getById(
@@ -91,6 +95,7 @@ public class GamesController {
 	}
 	
 	
+	@Secured({"ROLE_ADMIN", "ROLE_USER"})
 	@PostMapping(path = "/game/insert")
 	public ResponseEntity<GameModel> insert(
 			@RequestParam(name = "name") String name,
@@ -162,6 +167,7 @@ public class GamesController {
 	}
 	
 	
+	@Secured({"ROLE_ADMIN", "ROLE_USER"})
 	@PutMapping(path = "game/update")
 	public ResponseEntity<GameModel> update(
 			@RequestParam(name = "id") int id,
@@ -241,6 +247,8 @@ public class GamesController {
 		return new ResponseEntity<>(game, HttpStatus.OK);
 	}
 
+	
+	@Secured("ROLE_ADMIN")
 	@DeleteMapping(path = "/game/delete")
 	public ResponseEntity<Boolean> delete(
 			@RequestParam(name = "id") int id) {
