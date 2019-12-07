@@ -28,7 +28,7 @@ import uni.fmi.repositories.GameRepository;
 import uni.fmi.repositories.GenreRepository;
 import uni.fmi.repositories.PlatformRepository;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
 @RestController
 public class GamesController {
 
@@ -53,7 +53,6 @@ public class GamesController {
 	public ResponseEntity<List<GameModel>> getAll() {
 		return new ResponseEntity<>(gameRepo.findAll(), HttpStatus.OK);
 	}
-	
 	
 	@GetMapping(path = "/game")
 	public ResponseEntity<GameModel> getById(

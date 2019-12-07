@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uni.fmi.models.DeveloperModel;
 import uni.fmi.repositories.DeveloperRepository;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
 @RestController
 public class DevelopersController {
 

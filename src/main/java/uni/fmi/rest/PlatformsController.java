@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uni.fmi.models.PlatformModel;
 import uni.fmi.repositories.PlatformRepository;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
 @RestController
 public class PlatformsController {
 

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uni.fmi.models.GenreModel;
 import uni.fmi.repositories.GenreRepository;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
 @RestController
 public class GenresController {
 
