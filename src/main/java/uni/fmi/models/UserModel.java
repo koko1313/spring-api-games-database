@@ -4,16 +4,21 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "users")
+@JsonIgnoreProperties({"games"})
 public class UserModel {
 
 	@Id
@@ -32,6 +37,9 @@ public class UserModel {
 			joinColumns = @JoinColumn(name = "user_id"),
 			inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private List<RoleModel> roles;
+	
+	@OneToMany(mappedBy = "addedByUser", fetch = FetchType.EAGER)
+	private List<GameModel> games;
 	
 	// ==================================================================
 	
@@ -69,6 +77,14 @@ public class UserModel {
 
 	public void setRoles(List<RoleModel> roles) {
 		this.roles = roles;
+	}
+
+	public List<GameModel> getGames() {
+		return games;
+	}
+
+	public void setGames(List<GameModel> games) {
+		this.games = games;
 	}
 	
 }

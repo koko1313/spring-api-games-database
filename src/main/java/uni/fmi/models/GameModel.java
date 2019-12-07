@@ -50,6 +50,10 @@ public class GameModel {
 	@JoinColumn(name = "developer_id")
 	private DeveloperModel developer;
 	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "added_by_user_id")
+	private UserModel addedByUser;
+	
 	// ==================================================================
 	
 	public GameModel() {
@@ -123,6 +127,16 @@ public class GameModel {
 
 	public void setDeveloper(DeveloperModel developer) {
 		this.developer = developer;
+	}
+
+
+	public UserModel getAddedByUser() {
+		return addedByUser;
+	}
+
+
+	public void setAddedByUser(UserModel addedByUser) {
+		this.addedByUser = addedByUser;
 	}
 	
 }

@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,10 +25,12 @@ import uni.fmi.models.DeveloperModel;
 import uni.fmi.models.GameModel;
 import uni.fmi.models.GenreModel;
 import uni.fmi.models.PlatformModel;
+import uni.fmi.models.UserModel;
 import uni.fmi.repositories.DeveloperRepository;
 import uni.fmi.repositories.GameRepository;
 import uni.fmi.repositories.GenreRepository;
 import uni.fmi.repositories.PlatformRepository;
+import uni.fmi.repositories.UserRepository;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*", allowCredentials = "true")
 @RestController
@@ -38,16 +40,18 @@ public class GamesController {
 	DeveloperRepository developerRepo;
 	GenreRepository genreRepo;
 	PlatformRepository platformRepo;
+	UserRepository userRepo;
 	
 	HttpServletRequest request;
 	
 	final String PATH_TO_IMAGES_FOLDER = "/assets/images/games/";
 	
-	public GamesController(GameRepository gameRepo, DeveloperRepository developerRepo, GenreRepository genreRepo, PlatformRepository platformRepo, HttpServletRequest request) {
+	public GamesController(GameRepository gameRepo, DeveloperRepository developerRepo, GenreRepository genreRepo, PlatformRepository platformRepo, UserRepository userRepo, HttpServletRequest request) {
 		this.gameRepo = gameRepo;
 		this.developerRepo = developerRepo;
 		this.genreRepo = genreRepo;
 		this.platformRepo = platformRepo;
+		this.userRepo = userRepo;
 		this.request = request;
 	}
 
@@ -103,7 +107,8 @@ public class GamesController {
 			@RequestParam(name = "image", required = false) MultipartFile image,
 			@RequestParam(name = "developer_id", required = false, defaultValue = "0") int developer_id,
 			@RequestParam(name = "genres_id_list", required = false) List<Integer> genres_id_list,
-			@RequestParam(name = "platforms_id_list", required = false)List<Integer> platforms_id_list) {
+			@RequestParam(name = "platforms_id_list", required = false)List<Integer> platforms_id_list,
+			Authentication authentication) {
 		
 		// if the name of the game is null
 		if(name.equals("")) {
@@ -148,6 +153,9 @@ public class GamesController {
 			imageName = FileManipulations.saveFileToDisk(customName, image, realPathToImagesFolder);
 		}
 		
+		// get current logged user
+		UserModel currentUser = userRepo.findByUsername(authentication.getName());
+		
 		GameModel game = new GameModel();
 		game.setName(name);
 		game.setDescription(description);
@@ -155,6 +163,7 @@ public class GamesController {
 		game.setDeveloper(developer);
 		game.setGenres(genres);
 		game.setPlatforms(platforms);
+		game.setAddedByUser(currentUser);
 		
 		game = gameRepo.saveAndFlush(game);
 		
@@ -176,11 +185,20 @@ public class GamesController {
 			@RequestParam(name = "image", required = false) MultipartFile image,
 			@RequestParam(name = "developer_id", required = false, defaultValue = "0") int developer_id,
 			@RequestParam(name = "genres_id_list", required = false) List<Integer> genres_id_list,
-			@RequestParam(name = "platforms_id_list", required = false)List<Integer> platforms_id_list) {
+			@RequestParam(name = "platforms_id_list", required = false)List<Integer> platforms_id_list,
+			Authentication authentication) {
+		
+		GameModel game = gameRepo.findById(id);
 		
 		// if the game does not exist
-		if(gameRepo.findById(id) == null) {
+		if(game == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		// if the user that added the game is different than the current logged
+		UserModel currentUser = userRepo.findByUsername(authentication.getName());
+		if(game.getAddedByUser() != currentUser) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
 		// if the name of the game is null
@@ -189,7 +207,7 @@ public class GamesController {
 		}
 		
 		// if game with this name already exist
-		GameModel game = gameRepo.findByName(name);
+		game = gameRepo.findByName(name);
 		if(game != null) {
 			// and it's different than current
 			if(game.getId() != id) {
