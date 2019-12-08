@@ -6,15 +6,18 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	private ApplicationUserDetailsService userDetailsService;
+	private PasswordEncoder passwordEncoder;
 
-	public SecurityConfig(ApplicationUserDetailsService userDetailService) {
+	public SecurityConfig(ApplicationUserDetailsService userDetailService, PasswordEncoder passwordEncoder) {
 		this.userDetailsService = userDetailService;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	protected void configure(HttpSecurity http) throws Exception {
@@ -27,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		super.configure(auth);
-		auth.userDetailsService(userDetailsService);
+		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
 	}
 
 }
