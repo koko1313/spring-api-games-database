@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +48,7 @@ public class GenresController {
 	}
 	
 	
+	@Secured("ROLE_ADMIN")
 	@PostMapping(path = "/genre/insert")
 	public ResponseEntity<GenreModel> insert(
 			@RequestParam(name = "name") String genreName) {
@@ -76,6 +78,7 @@ public class GenresController {
 	}
 	
 	
+	@Secured("ROLE_ADMIN")
 	@PutMapping(path = "/genre/update")
 	public ResponseEntity<GenreModel> update(
 			@RequestParam(name = "id") int id,
@@ -109,6 +112,7 @@ public class GenresController {
 	}
 	
 	
+	@Secured("ROLE_ADMIN")
 	@DeleteMapping(path = "/genre/delete")
 	public ResponseEntity<Boolean> delete(
 			@RequestParam(name = "id") int id) {

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +48,7 @@ public class DevelopersController {
 	}
 	
 	
+	@Secured("ROLE_ADMIN")
 	@PostMapping(path = "/developer/insert")
 	public ResponseEntity<DeveloperModel> insert(
 			@RequestParam(name = "name") String developerName,
@@ -77,6 +79,7 @@ public class DevelopersController {
 	}
 	
 	
+	@Secured("ROLE_ADMIN")
 	@PutMapping(path = "/developer/update")
 	public ResponseEntity<DeveloperModel> update(
 			@RequestParam(name = "id") int id,
@@ -112,6 +115,7 @@ public class DevelopersController {
 	}
 	
 	
+	@Secured("ROLE_ADMIN")
 	@DeleteMapping(path = "/developer/delete")
 	public ResponseEntity<Boolean> delete(
 			@RequestParam(name = "id") int id) {

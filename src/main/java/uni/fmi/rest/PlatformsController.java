@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +48,7 @@ public class PlatformsController {
 	}
 	
 	
+	@Secured("ROLE_ADMIN")
 	@PostMapping(path = "/platform/insert")
 	public ResponseEntity<PlatformModel> insert(
 			@RequestParam(name = "name") String platformName) {
@@ -76,6 +78,7 @@ public class PlatformsController {
 	}
 	
 	
+	@Secured("ROLE_ADMIN")
 	@PutMapping(path = "/platform/update")
 	public ResponseEntity<PlatformModel> update(
 			@RequestParam(name = "id") int id,
@@ -109,6 +112,7 @@ public class PlatformsController {
 	}
 	
 	
+	@Secured("ROLE_ADMIN")
 	@DeleteMapping(path = "/platform/delete")
 	public ResponseEntity<Boolean> delete(
 			@RequestParam(name = "id") int id) {
